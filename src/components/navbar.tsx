@@ -2,13 +2,14 @@ import { Sheet, SheetTrigger, SheetContent,SheetTitle } from "@/components/ui/sh
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { JSX, SVGProps } from "react"
+import { User } from "lucide-react"
 
 export default function Navbar() {
   return (
     <header className="flex h-20 w-full shrink-0 items-center px-4 md:px-6">
       <Link href="#" className="mr-6 flex" prefetch={false}>
         <MountainIcon className="h-6 w-6" />
-        <span className="text-lg font-semibold ms-4">CrowdFunding</span>
+        <span className="text-lg font-semibold ms-4">CrestFunding</span>
       </Link>
       <Sheet>
         <SheetTrigger asChild>
@@ -21,7 +22,7 @@ export default function Navbar() {
         <SheetTitle>Menu</SheetTitle> 
           <Link href="#" className="mr-6 hidden md:block lg:flex" prefetch={false}>
             <MountainIcon className="h-6 w-6" />
-            <span className=" text-lg font-semibold ms-4">CrowdFunding</span>
+            <span className=" text-lg font-semibold ms-4">CrestFunding</span>
           </Link>
           <div className="grid gap-2 py-6">
             <Link href="#" className="flex w-full items-center py-2 text-lg font-semibold" prefetch={false}>
@@ -31,9 +32,10 @@ export default function Navbar() {
               About
             </Link>
             <Link href="#" className="flex w-full items-center py-2 text-lg font-semibold" prefetch={false}>
-              Start a campaign
+            <Button>Start a campaign</Button>
             </Link>
             <Link href="#" className="flex w-full items-center py-2 text-lg font-semibold" prefetch={false}>
+            <User className="me-2"/>
               Profile
             </Link>
           </div>
@@ -60,13 +62,14 @@ export default function Navbar() {
           className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-white px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900 focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-gray-100/50 data-[state=open]:bg-gray-100/50 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus:bg-gray-800 dark:focus:text-gray-50 dark:data-[active]:bg-gray-800/50 dark:data-[state=open]:bg-gray-800/50"
           prefetch={false}
         >
-          Start a Campaign
+          <Button>Start a campaign</Button>
         </Link>
         <Link
           href="#"
           className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-white px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900 focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-gray-100/50 data-[state=open]:bg-gray-100/50 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus:bg-gray-800 dark:focus:text-gray-50 dark:data-[active]:bg-gray-800/50 dark:data-[state=open]:bg-gray-800/50"
           prefetch={false}
         >
+          <User className="me-2"/>
           Profile
         </Link>
       </nav>
