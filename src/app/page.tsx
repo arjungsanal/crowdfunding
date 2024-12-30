@@ -1,7 +1,12 @@
 import Image from "next/image";
+import Navbar from "@/components/navbar";
 
 export default function Home() {
   return (
-  <h1>Crowd Funding</h1>  
+    <div>
+      <Navbar/>
+      <h1>Crowd Funding</h1>  
+    </div>
+
   );
 }
