@@ -20,7 +20,7 @@ export default function Navbar() {
         </SheetTrigger>
         <SheetContent side="right">
         <SheetTitle>Menu</SheetTitle> 
-          <Link href="#" className="mr-6 hidden md:block lg:flex" prefetch={false}>
+          <Link href="#" className="mr-6 hidden lg:flex" prefetch={false}>
             <MountainIcon className="h-6 w-6" />
             <span className=" text-lg font-semibold ms-4">CrestFunding</span>
           </Link>
@@ -31,12 +31,13 @@ export default function Navbar() {
             <Link href="#" className="flex w-full items-center py-2 text-lg font-semibold" prefetch={false}>
               About
             </Link>
+         
             <Link href="#" className="flex w-full items-center py-2 text-lg font-semibold" prefetch={false}>
-            <Button>Start a campaign</Button>
+            {/* <User className="me-2"/> */}
+              Profile
             </Link>
             <Link href="#" className="flex w-full items-center py-2 text-lg font-semibold" prefetch={false}>
-            <User className="me-2"/>
-              Profile
+            <Button>Start a campaign</Button>
             </Link>
           </div>
         </SheetContent>
