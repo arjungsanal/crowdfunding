@@ -4,16 +4,20 @@ import Footer from "@/components/footer";
 import CampaignCard from "@/components/campaignCard";
 import LiveCampaign from "@/components/liveCampaign";
 import HeroSection from "@/components/heroSection";
+import StepsSection from "@/components/stepsSection";
+import DonateSteps from "@/components/donateSteps";
 
 export default function Home() {
   return (
     <div>
-        <Navbar/>
+      <Navbar/>
       {/* <h1>Crowd Funding</h1> */}
       <HeroSection/>
       <LiveCampaign/>  
       {/* <CampaignCard/>     */}
-       <Footer/>
+      <StepsSection/>
+      <DonateSteps/>
+      <Footer/>
     </div>
 
   );
