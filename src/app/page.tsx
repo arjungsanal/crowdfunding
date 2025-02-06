@@ -1,15 +1,19 @@
 import Image from "next/image";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
+import CampaignCard from "@/components/campaignCard";
+import LiveCampaign from "@/components/liveCampaign";
 import HeroSection from "@/components/heroSection";
 
 export default function Home() {
   return (
     <div>
-      <Navbar/>
+        <Navbar/>
+      {/* <h1>Crowd Funding</h1> */}
       <HeroSection/>
-      <h1></h1>  
-      <Footer/>
+      <LiveCampaign/>  
+      {/* <CampaignCard/>     */}
+       <Footer/>
     </div>
 
   );
