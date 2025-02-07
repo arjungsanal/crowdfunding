@@ -4,7 +4,7 @@ import { Button } from "./ui/button"
 
 function Footer() {
   return (
-    <footer className="mt-10 border-t py-6 px-4 md:px-6">
+    <footer className=" border-t py-6 px-4 md:px-6">
       <div className="container mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           {/* Logo and Brand */}
