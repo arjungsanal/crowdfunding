@@ -1,5 +1,6 @@
 import Footer from "@/components/footer";
 import Navbar from "@/components/navbar";
+import ContactReport from "@/components/pages/details/contactReport";
 import FundraisingCard from "@/components/pages/details/detailsCard";
 import CampaignDetails from "@/components/pages/details/publicDetails";
 import SlidingTabsComponent from "@/components/pages/details/slidingTab";
@@ -9,7 +10,7 @@ export default function Details() {
         <div>
             <Navbar />
             <FundraisingCard />
-            
+
             <div className="flex items-center justify-center  bg-gray-100">
                 <SlidingTabsComponent />
             </div>
@@ -25,6 +26,8 @@ export default function Details() {
                 amount: 552225552,
                 timestamp: "2022"
             }]} />
+
+            <ContactReport />
             <Footer />
             
         </div>

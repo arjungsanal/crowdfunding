@@ -119,12 +119,12 @@ const SlidingTabsComponent = () => {
             </Button>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-2">
-            <Button className="flex gap-2 justify-center flex-1">
+          <div className="flex flex-col sm:flex-row gap-2 justify-center">
+            <Button className=" gap-2 justify-center px-24 ">
               <Share className="h-4 w-4 sm:h-5 sm:w-5" />
               Share
             </Button>
-            <Button className="flex gap-2 justify-center flex-1 bg-blue-800 hover:bg-blue-600">
+            <Button className=" gap-2 justify-center px-24  bg-blue-800 hover:bg-blue-600">
               <HeartHandshake className="h-4 w-4 sm:h-5 sm:w-5" />
               Contribute
             </Button>

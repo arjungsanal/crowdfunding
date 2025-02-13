@@ -91,7 +91,7 @@ const CampaignDetails = ({ campaignerDetails, recentDonations }: CampaignDetails
                   </div>
                   <div className="flex-shrink-0">
                     <p className="text-sm font-semibold text-green-600">
-                      ${donation.amount.toLocaleString()}
+                    ₹{donation.amount.toLocaleString()}
                     </p>
                   </div>
                 </div>
