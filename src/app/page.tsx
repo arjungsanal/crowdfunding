@@ -5,10 +5,11 @@ import HeroSection from "@/components/heroSection";
 import PlatformFeatures from "@/components/platformFeatures";
 import StepsSection from "@/components/stepsSection";
 import DonateSteps from "@/components/donateSteps";
+import { AuthProvider } from "@/context/AuthContext";
 
 export default function Home() {
   return (
-    <div>
+    <AuthProvider>
       <Navbar />
       <HeroSection />
       <LiveCampaign />
@@ -34,6 +35,7 @@ export default function Home() {
       </section>
 
       <Footer />
-    </div>
+      </AuthProvider>
+    
   );
 }
