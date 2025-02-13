@@ -6,10 +6,12 @@ import PlatformFeatures from "@/components/platformFeatures";
 import StepsSection from "@/components/stepsSection";
 import DonateSteps from "@/components/donateSteps";
 import { AuthProvider } from "@/context/AuthContext";
+import { Toaster } from "@/components/ui/toaster";
 
 export default function Home() {
   return (
     <AuthProvider>
+      
       <Navbar />
       <HeroSection />
       <LiveCampaign />
@@ -35,6 +37,7 @@ export default function Home() {
       </section>
 
       <Footer />
+      <Toaster />
       </AuthProvider>
     
   );
