@@ -15,5 +15,9 @@ export default function AuthPage() {
     }
   }, [user, router])
 
-  return <AuthComponent />
+  return <>
+
+  <AuthComponent />
+
+  </>
 }

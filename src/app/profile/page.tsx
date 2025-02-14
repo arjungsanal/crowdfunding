@@ -10,6 +10,8 @@ import { useToast } from "@/hooks/use-toast"
 import ProtectedRoute from "@/components/protectedRoute"
 import { Camera, LogOut, Trash2, User, Mail, Lock } from "lucide-react"
 import type React from "react"
+import Navbar from "@/components/navbar"
+import Footer from "@/components/footer"
 
 export default function ProfilePage() {
   const { user, signOut } = useAuth()
@@ -33,6 +35,7 @@ export default function ProfilePage() {
 
   return (
     <ProtectedRoute>
+      <Navbar />
       <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 p-6">
         <Card className="w-full max-w-3xl mx-auto shadow-lg">
           {/* Header Section */}
@@ -152,6 +155,7 @@ export default function ProfilePage() {
           </div>
         </Card>
       </div>
+      <Footer />
     </ProtectedRoute>
   )
 }
