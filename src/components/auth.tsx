@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import Footer from "./footer";
+
 
 export default function AuthComponent() {
   const [email, setEmail] = useState("");
