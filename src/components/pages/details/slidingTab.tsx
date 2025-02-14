@@ -43,7 +43,7 @@ const SlidingTabsComponent = () => {
   };
 
   return (
-    <div className="ml-20 mr-20 px-4 sm:px-6 lg:px-8 mb-6">
+    <div className="mx-4 sm:mx-8 md:mx-12 lg:mx-20 px-2 sm:px-4 md:px-6 lg:px-8 mb-6">
       <div className="bg-white rounded-lg shadow-lg p-3 sm:p-4">
         {/* Tabs Container */}
         <div className="relative overflow-hidden">
