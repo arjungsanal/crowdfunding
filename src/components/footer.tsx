@@ -9,7 +9,7 @@ function Footer() {
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           {/* Logo and Brand */}
           <div className="flex items-center">
-            <Link href="#" className="flex items-center hover:opacity-80 transition-opacity" prefetch={false}>
+            <Link href="/" className="flex items-center hover:opacity-80 transition-opacity" prefetch={false}>
               <MountainIcon className="h-6 w-6" />
               <span className="text-lg font-semibold ml-2">CrestFunding</span>
             </Link>
