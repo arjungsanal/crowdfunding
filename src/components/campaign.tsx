@@ -8,10 +8,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { X } from 'lucide-react';
 import { supabase } from '@/util/supabse';
 import { Database } from '@/types/supabse';
+import { useRouter } from 'next/navigation';
 
 const CampaignRegistration = () => {
+    const router = useRouter();
     //Types defined as blue print
 type CampaignInsert = Database['public']['Tables']['campaigns']['Insert'];
+const [isLoading, setIsLoading] = useState(false);
   const [step, setStep] = useState(1);
   const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
 const [proofImageFiles, setProofImageFiles] = useState<File[]>([]);
@@ -85,6 +88,8 @@ const handleSubmit = async (e: React.FormEvent) => {
   
     if (!validateStep(step)) return;
   
+    setIsLoading(true); // Start loading
+  
     try {
       // Upload cover image to Supabase Storage
       let coverImageUrl = '';
@@ -130,9 +135,15 @@ const handleSubmit = async (e: React.FormEvent) => {
   
       console.log('Campaign created successfully:', data);
       alert('Campaign created successfully!');
+  
+      // Redirect to /profile on success
+    router.push('/profile');
+    //   window.location.href = '/profile';
     } catch (error) {
       console.error('Error creating campaign:', error);
       alert('Failed to create campaign. Please try again.');
+    } finally {
+      setIsLoading(false); // Stop loading
     }
   };
 
@@ -328,12 +339,13 @@ const handleSubmit = async (e: React.FormEvent) => {
               Previous
             </Button>
             {step === 3 ? (
-              <Button
-                type="submit"
-                className="bg-black text-white hover:bg-gray-800 px-6"
-              >
-                Submit
-              </Button>
+           <Button
+           type="submit"
+           className="bg-black text-white hover:bg-gray-800 px-6"
+           disabled={isLoading}
+         >
+           {isLoading ? 'Submitting...' : 'Submit'}
+         </Button>
             ) : (
               <Button
                 type="button"
