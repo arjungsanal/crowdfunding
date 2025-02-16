@@ -6,22 +6,28 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { X } from 'lucide-react';
+import { supabase } from '@/util/supabse';
+import { Database } from '@/types/supabse';
 
 const CampaignRegistration = () => {
+    //Types defined as blue print
+type CampaignInsert = Database['public']['Tables']['campaigns']['Insert'];
   const [step, setStep] = useState(1);
+  const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
+const [proofImageFiles, setProofImageFiles] = useState<File[]>([]);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<CampaignInsert>({
     title: '',
-    goal: '',
+    goal: 0, // Use number instead of string
     deadline: '',
-    walletId: '',
+    wallet_id: '', // Use wallet_id instead of wallet_id
     story: '',
     description: '',
-    coverImage: null,
-    proofImages: [] as File[]
+    cover_image_url: null, // Use cover_image_url instead of cover_image_url
+    proof_image_urls: [], // Use proof_image_urls instead of proofImages
   });
 
-  const updateFormData = (field: string, value: any) => {
+  const updateFormData = (field: keyof CampaignInsert, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     validateField(field, value);
   };
@@ -57,47 +63,99 @@ const CampaignRegistration = () => {
 
   const handleProofImages = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
-    setFormData(prev => ({
-      ...prev,
-      proofImages: [...prev.proofImages, ...files]
-    }));
+    setProofImageFiles((prev) => [...prev, ...files]);
   };
-
+  
   const removeProofImage = (index: number) => {
-    setFormData(prev => ({
-      ...prev,
-      proofImages: prev.proofImages.filter((_, i) => i !== index)
-    }));
+    setProofImageFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+//   const handleSubmit = (e: React.FormEvent) => {
+//     e.preventDefault();
+//     const allFields = validateStep(step);
+//     if (allFields) {
+//       console.log('Form Data:', formData);
+//     }
+//   };
+
+//Logic to push data to backend
+
+const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const allFields = validateStep(step);
-    if (allFields) {
-      console.log('Form Data:', formData);
+  
+    if (!validateStep(step)) return;
+  
+    try {
+      // Upload cover image to Supabase Storage
+      let coverImageUrl = '';
+      if (coverImageFile) {
+        const { data: coverImageData, error: coverImageError } = await supabase.storage
+          .from('campaigns')
+          .upload(`cover-images/${coverImageFile.name}`, coverImageFile);
+  
+        if (coverImageError) throw coverImageError;
+        coverImageUrl = coverImageData.path;
+      }
+  
+      // Upload proof images to Supabase Storage
+      const proofImageUrls = [];
+      for (const file of proofImageFiles) {
+        const { data: proofImageData, error: proofImageError } = await supabase.storage
+          .from('campaigns')
+          .upload(`proof-images/${file.name}`, file);
+  
+        if (proofImageError) throw proofImageError;
+        proofImageUrls.push(proofImageData.path);
+      }
+  
+      // Prepare the data for insertion
+      const campaignData: CampaignInsert = {
+        title: formData.title,
+        goal: formData.goal,
+        deadline: formData.deadline,
+        wallet_id: formData.wallet_id,
+        story: formData.story,
+        description: formData.description,
+        cover_image_url: coverImageUrl,
+        proof_image_urls: proofImageUrls,
+      };
+  
+      // Insert campaign data into the `campaigns` table
+      const { data, error } = await supabase
+        .from('campaigns')
+        .insert([campaignData])
+        .select();
+  
+      if (error) throw error;
+  
+      console.log('Campaign created successfully:', data);
+      alert('Campaign created successfully!');
+    } catch (error) {
+      console.error('Error creating campaign:', error);
+      alert('Failed to create campaign. Please try again.');
     }
   };
 
   const validateStep = (currentStep: number) => {
     const newErrors: Record<string, string> = {};
-    
+  
     if (currentStep === 1) {
       if (!formData.title) newErrors.title = 'Title is required';
       if (!formData.goal) newErrors.goal = 'Goal is required';
-      if (!formData.walletId) newErrors.walletId = 'Wallet ID is required';
+      if (!formData.wallet_id) newErrors.wallet_id = 'Wallet ID is required';
       if (!formData.deadline) newErrors.deadline = 'Deadline is required';
     }
-    
+  
     if (currentStep === 2) {
       if (formData.story.split(' ').length < 300) newErrors.story = 'Story must be at least 300 words';
       if (formData.description.split(' ').length > 30) newErrors.description = 'Description must not exceed 30 words';
     }
-    
+  
     if (currentStep === 3) {
-      if (!formData.coverImage) newErrors.coverImage = 'Cover image is required';
-      if (formData.proofImages.length === 0) newErrors.proofImages = 'At least one proof image is required';
+      if (!coverImageFile) newErrors.cover_image_url = 'Cover image is required';
+      if (proofImageFiles.length === 0) newErrors.proof_image_urls = 'At least one proof image is required';
     }
-    
+  
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -146,12 +204,12 @@ const CampaignRegistration = () => {
         <label className="text-sm font-medium">Wallet Address *</label>
         <Input
           placeholder="Enter your crypto wallet ID"
-          className={`border-2 focus:ring-2 focus:ring-black font-mono ${errors.walletId ? 'border-red-500' : ''}`}
-          onChange={(e) => updateFormData('walletId', e.target.value)}
-          value={formData.walletId}
+          className={`border-2 focus:ring-2 focus:ring-black font-mono ${errors.wallet_id ? 'border-red-500' : ''}`}
+          onChange={(e) => updateFormData('wallet_id', e.target.value)}
+          value={formData.wallet_id}
           required
         />
-        {errors.walletId && <span className="text-red-500 text-xs">{errors.walletId}</span>}
+        {errors.wallet_id && <span className="text-red-500 text-xs">{errors.wallet_id}</span>}
       </div>
       <div className="space-y-2">
         <label className="text-sm font-medium">Campaign Deadline *</label>
@@ -209,11 +267,11 @@ const CampaignRegistration = () => {
         <Input
           type="file"
           accept="image/*"
-          className={`border-2 focus:ring-2 focus:ring-black ${errors.coverImage ? 'border-red-500' : ''}`}
-          onChange={(e) => updateFormData('coverImage', e.target.files?.[0] || null)}
+          className={`border-2 focus:ring-2 focus:ring-black ${errors.cover_image_url ? 'border-red-500' : ''}`}
+          onChange={(e) => setCoverImageFile(e.target.files?.[0] || null)}
           required
         />
-        {errors.coverImage && <span className="text-red-500 text-xs">{errors.coverImage}</span>}
+        {errors.cover_image_url && <span className="text-red-500 text-xs">{errors.cover_image_url}</span>}
       </div>
       <div className="space-y-2">
         <label className="text-sm font-medium">Proof Images *</label>
@@ -221,13 +279,13 @@ const CampaignRegistration = () => {
           type="file"
           accept="image/*"
           multiple
-          className={`border-2 focus:ring-2 focus:ring-black ${errors.proofImages ? 'border-red-500' : ''}`}
+          className={`border-2 focus:ring-2 focus:ring-black ${errors.proof_image_urls ? 'border-red-500' : ''}`}
           onChange={handleProofImages}
           required
         />
-        {errors.proofImages && <span className="text-red-500 text-xs">{errors.proofImages}</span>}
+        {errors.proof_image_urls && <span className="text-red-500 text-xs">{errors.proof_image_urls}</span>}
         <div className="grid grid-cols-2 gap-3 mt-3">
-          {formData.proofImages.map((file, index) => (
+          {proofImageFiles.map((file, index) => (
             <div key={index} className="relative p-3 border-2 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
               <div className="flex items-center justify-between">
                 <span className="text-sm truncate">{file.name}</span>
