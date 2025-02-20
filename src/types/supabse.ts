@@ -13,6 +13,10 @@ export type Database = {
           cover_image_url: string | null;
           proof_image_urls: string[] | null;
           created_at: string; // Timestamp
+          beneficiary_name: string;
+          hosted_by: string;
+          relationship: string;
+          approval_status: 'pending' | 'approved' | 'rejected';
         };
         Insert: {
           id?: string; // Auto-generated UUID
@@ -25,6 +29,10 @@ export type Database = {
           cover_image_url?: string | null;
           proof_image_urls?: string[] | null;
           created_at?: string; // Auto-generated timestamp
+          beneficiary_name: string;
+          hosted_by: string;
+          relationship: string;
+          approval_status?: 'pending' | 'approved' | 'rejected';
         };
         Update: {
           title?: string;
@@ -35,6 +43,10 @@ export type Database = {
           description?: string;
           cover_image_url?: string | null;
           proof_image_urls?: string[] | null;
+          beneficiary_name?: string;
+          hosted_by?: string;
+          relationship?: string;
+          approval_status?: 'pending' | 'approved' | 'rejected';
         };
       };
       

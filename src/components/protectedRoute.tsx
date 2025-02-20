@@ -1,18 +1,22 @@
-"use client"; // Ensure this is a Client Component
+"use client";
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation'; // Use next/navigation instead of next/router
-import { useAuth } from '../context/AuthContext';
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "../context/AuthContext";
 
-export default function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { user } = useAuth();
-  const router = useRouter(); // Use the correct router
+export default function ProtectedRoute({ children, redirectPath = "/auth" }: { children: React.ReactNode; redirectPath?: string }) {
+  const { user, loading } = useAuth();
+  const router = useRouter();
 
   useEffect(() => {
-    if (!user) {
-      router.push('/auth'); // Redirect to the auth page if the user is not authenticated
+    if (!loading && !user) {
+      router.push(redirectPath);
     }
-  }, [user, router]);
+  }, [user, loading, router, redirectPath]);
 
-  return user ? <>{children}</> : null; // Render children only if the user is authenticated
+  if (loading) {
+    return <div>Loading...</div>; // Show a loading indicator instead of redirecting
+  }
+
+  return user ? <>{children}</> : null;
 }
