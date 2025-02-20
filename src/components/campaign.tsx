@@ -28,6 +28,9 @@ const [proofImageFiles, setProofImageFiles] = useState<File[]>([]);
     description: '',
     cover_image_url: null, // Use cover_image_url instead of cover_image_url
     proof_image_urls: [], // Use proof_image_urls instead of proofImages
+    beneficiary_name: '',
+    hosted_by: '',
+    relationship: ''
   });
 
   const updateFormData = (field: keyof CampaignInsert, value: any) => {
@@ -123,6 +126,9 @@ const handleSubmit = async (e: React.FormEvent) => {
         description: formData.description,
         cover_image_url: coverImageUrl,
         proof_image_urls: proofImageUrls,
+        beneficiary_name: '',
+        hosted_by: '',
+        relationship: ''
       };
   
       // Insert campaign data into the `campaigns` table
