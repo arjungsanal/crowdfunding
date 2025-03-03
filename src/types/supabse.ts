@@ -17,6 +17,7 @@ export type Database = {
           hosted_by: string;
           relationship: string;
           approval_status: 'pending' | 'approved' | 'rejected';
+          user_id: string; // Added user_id field
         };
         Insert: {
           id?: string; // Auto-generated UUID
@@ -33,6 +34,7 @@ export type Database = {
           hosted_by: string;
           relationship: string;
           approval_status?: 'pending' | 'approved' | 'rejected';
+          user_id: string; // Added user_id field as required
         };
         Update: {
           title?: string;
@@ -47,6 +49,7 @@ export type Database = {
           hosted_by?: string;
           relationship?: string;
           approval_status?: 'pending' | 'approved' | 'rejected';
+          user_id?: string; // Added user_id field as optional for updates
         };
       };
       

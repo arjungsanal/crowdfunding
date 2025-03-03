@@ -10,9 +10,11 @@ import { X } from 'lucide-react';
 import { supabase } from '@/util/supabse';
 import { Database } from '@/types/supabse';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext'; // Import your auth context
 
 const CampaignRegistration = () => {
     const router = useRouter();
+    const { user } = useAuth();
     
     type CampaignInsert = Database['public']['Tables']['campaigns']['Insert'];
     const [isLoading, setIsLoading] = useState(false);
@@ -31,7 +33,8 @@ const CampaignRegistration = () => {
         proof_image_urls: [],
         beneficiary_name: '',
         hosted_by: '',
-        relationship: ''
+        relationship: '',
+        user_id : '',
     });
 
   const updateFormData = (field: keyof CampaignInsert, value: any) => {
@@ -147,6 +150,7 @@ const handleSubmit = async (e: React.FormEvent) => {
           ...formData,
           cover_image_url: coverImageUrl,
           proof_image_urls: proofImageUrls,
+          user_id : user!.id,
       };
   
       const { data, error } = await supabase
