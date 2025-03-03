@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, SVGProps, JSX } from 'react';
-import { Layout, LayoutIcon, BarChart3, CheckCircle, XCircle, LogOut, User, Shield } from 'lucide-react';
+import { Layout, LayoutIcon, BarChart3, CheckCircle, XCircle, LogOut, User, Shield, Eye } from 'lucide-react';
 import Link from "next/link";
 import {
   Card,
@@ -17,11 +17,20 @@ import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import CampaignDetailsModal from './viewDetails';
+
 
 // Type definitions
 interface LoginFormProps {
   onLogin: () => void;
 }
+
+// Sample data for pending campaigns
+const pendingCampaigns = [
+  { id: 1, daysAgo: 2, goal: { toLocaleString: () => "25,000" } },
+  { id: 2, daysAgo: 3, goal: { toLocaleString: () => "15,000" } },
+  { id: 3, daysAgo: 1, goal: { toLocaleString: () => "30,000" } },
+];
 
 // Login Component
 const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
@@ -166,13 +175,38 @@ const DashboardContent: React.FC = () => (
   </div>
 );
 
-const PendingRequests: React.FC = () => (
-  <div>
+const PendingRequests: React.FC = () => {
+  const [selectedCampaignId, setSelectedCampaignId] = useState<number | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleViewDetails = (id: number) => {
+    setSelectedCampaignId(id);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleApproveCampaign = (id: number) => {
+    // Logic to approve campaign
+    console.log(`Approving campaign ${id}`);
+    setIsModalOpen(false);
+  };
+
+  const handleRejectCampaign = (id: number) => {
+    // Logic to reject campaign
+    console.log(`Rejecting campaign ${id}`);
+    setIsModalOpen(false);
+  };
+
+  return (
+    <div>
     <h2 className="text-2xl font-bold mb-6">Pending Approval Requests</h2>
     <Card className="border-0 shadow-sm overflow-hidden">
       <div className="divide-y">
-        {[1, 2, 3].map((i) => (
-          <div key={i} className="p-4 hover:bg-gray-50 transition-colors">
+        {pendingCampaigns.map((campaign) => (
+          <div key={campaign.id} className="p-4 hover:bg-gray-50 transition-colors">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div className="flex items-center">
                 <div className="h-10 w-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 mr-3">
@@ -180,19 +214,38 @@ const PendingRequests: React.FC = () => (
                 </div>
                 <div>
                   <div className="flex items-center">
-                    <h4 className="font-semibold">Campaign #{i}</h4>
+                    <h4 className="font-semibold">Campaign #{campaign.id}</h4>
                     <Badge variant="outline" className="ml-2 text-amber-600 bg-amber-50">Pending</Badge>
                   </div>
-                  <p className="text-sm text-gray-500">Requested: 2 days ago</p>
-                  <p className="text-sm text-gray-600 mt-1">Fundraising goal: $25,000</p>
+                  <p className="text-sm text-gray-500">Requested: {campaign.daysAgo} days ago</p>
+                  <p className="text-sm text-gray-600 mt-1">Fundraising goal: ${campaign.goal.toLocaleString()}</p>
                 </div>
               </div>
               <div className="flex space-x-2 ml-auto">
-                <Button variant="outline" size="sm" className="border-green-500 text-green-600 hover:bg-green-50">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="border-blue-500 text-blue-600 hover:bg-blue-50"
+                  onClick={() => handleViewDetails(campaign.id as number)}
+                >
+                  <Eye className="mr-1 h-4 w-4" />
+                  View Details
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="border-green-500 text-green-600 hover:bg-green-50"
+                  onClick={() => handleApproveCampaign(campaign.id as number)}
+                >
                   <CheckCircle className="mr-1 h-4 w-4" />
                   Approve
                 </Button>
-                <Button variant="outline" size="sm" className="border-red-500 text-red-600 hover:bg-red-50">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="border-red-500 text-red-600 hover:bg-red-50"
+                  onClick={() => handleRejectCampaign(campaign.id as number)}
+                >
                   <XCircle className="mr-1 h-4 w-4" />
                   Reject
                 </Button>
@@ -202,8 +255,18 @@ const PendingRequests: React.FC = () => (
         ))}
       </div>
     </Card>
+    
+    {/* Campaign Details Modal */}
+    <CampaignDetailsModal
+      campaignId={selectedCampaignId}
+      isOpen={isModalOpen}
+      onClose={handleCloseModal}
+      onApprove={handleApproveCampaign}
+      onReject={handleRejectCampaign}
+    />
   </div>
-);
+  );
+};
 
 const ApprovedRequests: React.FC = () => (
   <div>
