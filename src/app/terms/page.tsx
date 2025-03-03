@@ -92,8 +92,20 @@ const sections = [
  
   },
   {
-    title: " Blockchain and Smart Contracts ",
-    content: "Transactions are immutable and cannot be altered or reversed.Smart contracts handle fund distribution based on predefined milestones.The platform is not liable for blockchain network failures."
+    title: "  Security & Fraud Prevention ",
+    content: "Fundraisers must undergo identity verification (KYC) to prevent scams.All transactions are recorded on a public blockchain ledger for transparency.Fraudulent activities will result in account suspension and legal action."
+
+
+ 
+  },
+  {
+    title: " Community Governance & Transparency",
+    content: "Users can participate in voting on featured campaigns to ensure fair funding distribution.Fundraisers are required to provide regular updates on the progress of their campaigns.The platform supports community-driven decision-making to prioritize the most impactful campaigns."
+ 
+  },
+  {
+    title: " Termination & Account Suspension ",
+    content: "Users violating these Terms may have their accounts suspended or permanently banned.Fraudulent campaigns will be reported to legal authorities.The platform reserves the right to modify or discontinue services at any time."
 
  
   },
@@ -102,16 +114,13 @@ const sections = [
     title: "Privacy Policy",
     content: "User data is collected and stored as per the Privacy Policy.Blockchain transactions are public and cannot be removed.The platform does not share user data with third parties for marketing."
   },
+  
   {
-    title: "User Content",
-    content: "Our service allows you to post, link, store, share and otherwise make available certain information, text, graphics, videos, or other material. You are responsible for the content that you post to the service."
-  },
-  {
-    title: "Limitation of Liability",
-    content: "In no event shall our company, nor its directors, employees, partners, agents, suppliers, or affiliates, be liable for any indirect, incidental, special, consequential or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses."
+    title: "Changes to Terms and Conditions",
+    content: "The platform may update these Terms from time to time.Users will be notified of significant changes via email or platform announcements.Continued use of the platform after updates means acceptance of the revised Terms."
   },
   {
     title: "Contact Us",
-    content: "If you have any questions about these Terms, please contact us at support@example.com."
+    content: "For any questions or concerns regarding these Terms and Conditions, please contact our support team through the platform."
   }
 ];
