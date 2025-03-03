@@ -73,7 +73,8 @@ const sections = [
   },
   {
     title: "Description of Service",
-    content: "We provide users with access to our platform and related services. The service includes all features and functionality available to users. We reserve the right to modify, suspend or discontinue the service at any time without notice."
+    content: " Platform - refers to the blockchain-based crowdfunding web application.  User - refers to anyone accessing or using the platform.Donor - refers to users who contribute funds to campaigns.Fundraiser - refers to users who create campaigns for raising funds.Smart Contract -  refers to blockchain-based mechanisms that automate transactions."
+
   },
   {
     title: " Eligibility",
