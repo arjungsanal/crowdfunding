@@ -18,7 +18,6 @@ export default function TermsAndConditionsPage() {
             </Button>
           </Link>
           <h1 className="text-3xl font-bold tracking-tight text-gray-900 mb-2">Terms and Conditions</h1>
-          
         </div>
 
         <Card className="border rounded-lg shadow-sm overflow-hidden mb-8">
@@ -43,7 +42,17 @@ export default function TermsAndConditionsPage() {
                     </div>
                   </summary>
                   <div className="px-6 pb-6 text-gray-700 leading-relaxed">
-                    <p>{section.content}</p>
+                    {index === 1 ? (
+                      <ul className="space-y-2">
+                        <li><span className="font-normal text-gray-600">Platform:</span> Refers to the blockchain-based crowdfunding web application.</li>
+                        <li><span className="font-normal text-gray-600">User:</span> Refers to anyone accessing or using the platform.</li>
+                        <li><span className="font-normal text-gray-600">Donor:</span> Refers to users who contribute funds to campaigns.</li>
+                        <li><span className="font-normal text-gray-600">Fundraiser:</span> Refers to users who create campaigns for raising funds.</li>
+                        <li><span className="font-normal text-gray-600">Smart Contract:</span> Refers to blockchain-based mechanisms that automate transactions.</li>
+                      </ul>
+                    ) : (
+                      <p>{section.content}</p>
+                    )}
                   </div>
                 </details>
               ))}
@@ -69,56 +78,43 @@ export default function TermsAndConditionsPage() {
 const sections = [
   {
     title: "Acceptance of Terms",
-    content: " By using this platform, you confirm that you have read, understood, and agree to comply with these Terms and Conditions. If you do not agree, please refrain from using the platform."
+    content: "By using this platform, you confirm that you have read, understood, and agree to comply with these Terms and Conditions. If you do not agree, please refrain from using the platform."
   },
   {
     title: "Description of Service",
-    content: " Platform - refers to the blockchain-based crowdfunding web application.  User - refers to anyone accessing or using the platform.Donor - refers to users who contribute funds to campaigns.Fundraiser - refers to users who create campaigns for raising funds.Smart Contract -  refers to blockchain-based mechanisms that automate transactions."
-
+    content: "Definitions of key terms used throughout this document."
   },
   {
-    title: " Eligibility",
-    content: "Be at least 18 years old or meet the legal age requirement in your jurisdiction.Provide accurate and complete registration details.omply with all applicable laws and regulations."
-
+    title: "Eligibility",
+    content: "Be at least 18 years old or meet the legal age requirement in your jurisdiction. Provide accurate and complete registration details. Comply with all applicable laws and regulations."
   },
   {
-    title: " Fundraising ",
-    content: "You must provide accurate information about your campaign.Funds must be used solely for the stated purpose.he platform does not guarantee the success of fundraising campaigns."
- 
+    title: "Fundraising",
+    content: "You must provide accurate information about your campaign. Funds must be used solely for the stated purpose. The platform does not guarantee the success of fundraising campaigns."
   },
   {
-    title: " Donations ",
-    content: " Acknowledge that donations are voluntary and non-refundable.Understand that the platform does not guarantee project success or fund utilization.Transactions will be recorded permanently on the blockchain."
-
- 
+    title: "Donations",
+    content: "Acknowledge that donations are voluntary and non-refundable. Understand that the platform does not guarantee project success or fund utilization. Transactions will be recorded permanently on the blockchain."
   },
   {
-    title: "  Security & Fraud Prevention ",
-    content: "Fundraisers must undergo identity verification (KYC) to prevent scams.All transactions are recorded on a public blockchain ledger for transparency.Fraudulent activities will result in account suspension and legal action."
-
-
- 
+    title: "Security & Fraud Prevention",
+    content: "Fundraisers must undergo identity verification (KYC) to prevent scams. All transactions are recorded on a public blockchain ledger for transparency. Fraudulent activities will result in account suspension and legal action."
   },
   {
-    title: " Community Governance & Transparency",
-    content: "Users can participate in voting on featured campaigns to ensure fair funding distribution.Fundraisers are required to provide regular updates on the progress of their campaigns.The platform supports community-driven decision-making to prioritize the most impactful campaigns."
- 
+    title: "Community Governance & Transparency",
+    content: "Users can participate in voting on featured campaigns to ensure fair funding distribution. Fundraisers are required to provide regular updates on the progress of their campaigns. The platform supports community-driven decision-making to prioritize the most impactful campaigns."
   },
   {
-    title: " Termination & Account Suspension ",
-    content: "Users violating these Terms may have their accounts suspended or permanently banned.Fraudulent campaigns will be reported to legal authorities.The platform reserves the right to modify or discontinue services at any time."
-
- 
+    title: "Termination & Account Suspension",
+    content: "Users violating these Terms may have their accounts suspended or permanently banned. Fraudulent campaigns will be reported to legal authorities. The platform reserves the right to modify or discontinue services at any time."
   },
-  
   {
     title: "Privacy Policy",
-    content: "User data is collected and stored as per the Privacy Policy.Blockchain transactions are public and cannot be removed.The platform does not share user data with third parties for marketing."
+    content: "User data is collected and stored as per the Privacy Policy. Blockchain transactions are public and cannot be removed. The platform does not share user data with third parties for marketing."
   },
-  
   {
     title: "Changes to Terms and Conditions",
-    content: "The platform may update these Terms from time to time.Users will be notified of significant changes via email or platform announcements.Continued use of the platform after updates means acceptance of the revised Terms."
+    content: "The platform may update these Terms from time to time. Users will be notified of significant changes via email or platform announcements. Continued use of the platform after updates means acceptance of the revised Terms."
   },
   {
     title: "Contact Us",
