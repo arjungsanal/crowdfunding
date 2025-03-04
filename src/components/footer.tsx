@@ -23,7 +23,7 @@ function Footer() {
           {/* Contact Button */}
           <div>
             <Button asChild variant="outline" size="sm">
-              <Link href="/contactus" className="hover:text-gray-700 dark:hover:text-gray-300">
+              <Link href="/contact" className="hover:text-gray-700 dark:hover:text-gray-300">
                 Contact Us
               </Link>
             </Button>
