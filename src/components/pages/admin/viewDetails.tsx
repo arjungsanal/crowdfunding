@@ -38,6 +38,7 @@ interface CampaignDetailsModalProps {
   onClose: () => void;
   onApprove: (id: number) => void;
   onReject: (id: number) => void;
+  viewOnly?: boolean; // Add this line - optional prop
 }
 
 const CampaignDetailsModal: React.FC<CampaignDetailsModalProps> = ({
@@ -81,8 +82,8 @@ const CampaignDetailsModal: React.FC<CampaignDetailsModalProps> = ({
           campaignDeadline: "2025-06-30",
           description: "John was recently diagnosed with a rare condition that requires specialized treatment. The funds will be used to cover medical expenses, therapy, and recovery support over the next 6 months. John's condition requires a specialized approach that is only available at certain medical facilities. The treatment plan includes multiple phases of therapy, medication, and follow-up care that will extend over a period of at least 6 months. Our family has already exhausted our savings and insurance coverage for the initial diagnosis and preliminary treatments. The requested funds will help cover the remaining medical bills, specialized equipment needed for home care, transportation to and from medical appointments (some of which are in different cities), prescription medications not covered by insurance, and essential therapy sessions. John has always been a pillar of strength for our family and community. He has volunteered countless hours at the local shelter and has been a mentor to many young people in our neighborhood. Now, he needs our support to overcome this challenging time in his life. We are deeply grateful for any contribution you can make to help John on his journey to recovery. Every donation, no matter the size, brings us one step closer to getting John the care he needs. Your support can make a significant difference in John's journey toward recovery. Thank you for your kindness and generosity during this difficult time for our family.",
           briefDescription: "Raising funds for specialized medical treatment and recovery support for John's rare condition.",
-          coverImage: "/api/placeholder/800/400", 
-          proofImages: ["/api/placeholder/400/300", "/api/placeholder/400/300", "/api/placeholder/400/300", "/api/placeholder/400/300"],
+          coverImage: "https://images.pexels.com/photos/47344/dollar-currency-money-us-dollar-47344.jpeg?auto=compress&cs=tinysrgb&w=600", 
+          proofImages: ["https://media.istockphoto.com/id/1291984656/photo/background-of-paper-indian-money-100-banknotes-500-banknotes.jpg?s=1024x1024&w=is&k=20&c=-udTpvt6u3b_G0-XiHtr-uBKzCUSJc3TfsRYeSvALEQ=", "https://media.istockphoto.com/id/1291984656/photo/background-of-paper-indian-money-100-banknotes-500-banknotes.jpg?s=1024x1024&w=is&k=20&c=-udTpvt6u3b_G0-XiHtr-uBKzCUSJc3TfsRYeSvALEQ=", "https://images.pexels.com/photos/210679/pexels-photo-210679.jpeg?auto=compress&cs=tinysrgb&w=600"],
           status: 'pending',
           createdAt: "2025-02-25T12:00:00Z"
         };
@@ -164,6 +165,7 @@ const CampaignDetailsModal: React.FC<CampaignDetailsModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogTitle></DialogTitle>
       <DialogContent className="sm:max-w-4xl max-h-[90vh] flex flex-col p-0">
         {loading ? (
           <div className="flex items-center justify-center py-12">
