@@ -510,10 +510,12 @@ const AdminDashboard: React.FC = () => {
       {/* Sidebar */}
       <div className="hidden md:block w-64 bg-white shadow-sm">
         <div className="sticky top-0 h-screen flex flex-col">
+          <Link href="/">
           <div className="p-6 flex items-center space-x-2 border-b">
             <MountainIcon className="h-6 w-6 text-black" />
             <h1 className="text-xl font-bold">CrestFunding</h1>
           </div>
+          </Link>
           
           <ScrollArea className="flex-1 py-4">
             <div className="space-y-1 px-3">
