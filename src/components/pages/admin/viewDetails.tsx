@@ -13,42 +13,28 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CheckCircle, XCircle, Calendar, Wallet, User, Users, Link as LinkIcon, FileText, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Card, CardContent } from "@/components/ui/card";
+import { Database } from '@/types/supabse';
 
-// Type definitions
-interface CampaignDetails {
-  id: number;
-  title: string;
-  beneficiaryName: string;
-  hostedBy: string;
-  relationshipToBeneficiary: string;
-  fundRaisingGoal: number;
-  walletAddress: string;
-  campaignDeadline: string;
-  description: string;
-  briefDescription: string;
-  coverImage: string;
-  proofImages: string[];
-  status: 'pending' | 'approved' | 'rejected';
-  createdAt: string;
-}
+type Campaign = Database["public"]["Tables"]["campaigns"]["Row"];
+
 
 interface CampaignDetailsModalProps {
-  campaignId: number | null;
+  Selectedcampaign : Campaign;
   isOpen: boolean;
   onClose: () => void;
-  onApprove: (id: number) => void;
-  onReject: (id: number) => void;
+  onApprove: (id: string) => void;
+  onReject: (id: string) => void;
   viewOnly?: boolean; // Add this line - optional prop
 }
 
 const CampaignDetailsModal: React.FC<CampaignDetailsModalProps> = ({
-  campaignId,
+  Selectedcampaign,
   isOpen,
   onClose,
   onApprove,
   onReject
 }) => {
-  const [campaign, setCampaign] = useState<CampaignDetails | null>(null);
+  const [campaign, setCampaign] = useState<Campaign | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<string>("details");
@@ -57,7 +43,7 @@ const CampaignDetailsModal: React.FC<CampaignDetailsModalProps> = ({
 
   useEffect(() => {
     const fetchCampaignDetails = async () => {
-      if (!campaignId) return;
+      if (!Selectedcampaign) return;
       
       setLoading(true);
       setError(null);
@@ -71,27 +57,12 @@ const CampaignDetailsModal: React.FC<CampaignDetailsModalProps> = ({
         
         // For demo purposes, mock data is used
         // In production, replace this with actual API call
-        const mockData: CampaignDetails = {
-          id: campaignId,
-          title: `Medical Support for John's Recovery`,
-          beneficiaryName: "John Smith",
-          hostedBy: "Mary Smith",
-          relationshipToBeneficiary: "Sibling",
-          fundRaisingGoal: 25000,
-          walletAddress: "0x1234...5678",
-          campaignDeadline: "2025-06-30",
-          description: "John was recently diagnosed with a rare condition that requires specialized treatment. The funds will be used to cover medical expenses, therapy, and recovery support over the next 6 months. John's condition requires a specialized approach that is only available at certain medical facilities. The treatment plan includes multiple phases of therapy, medication, and follow-up care that will extend over a period of at least 6 months. Our family has already exhausted our savings and insurance coverage for the initial diagnosis and preliminary treatments. The requested funds will help cover the remaining medical bills, specialized equipment needed for home care, transportation to and from medical appointments (some of which are in different cities), prescription medications not covered by insurance, and essential therapy sessions. John has always been a pillar of strength for our family and community. He has volunteered countless hours at the local shelter and has been a mentor to many young people in our neighborhood. Now, he needs our support to overcome this challenging time in his life. We are deeply grateful for any contribution you can make to help John on his journey to recovery. Every donation, no matter the size, brings us one step closer to getting John the care he needs. Your support can make a significant difference in John's journey toward recovery. Thank you for your kindness and generosity during this difficult time for our family.",
-          briefDescription: "Raising funds for specialized medical treatment and recovery support for John's rare condition.",
-          coverImage: "https://images.pexels.com/photos/47344/dollar-currency-money-us-dollar-47344.jpeg?auto=compress&cs=tinysrgb&w=600", 
-          proofImages: ["https://media.istockphoto.com/id/1291984656/photo/background-of-paper-indian-money-100-banknotes-500-banknotes.jpg?s=1024x1024&w=is&k=20&c=-udTpvt6u3b_G0-XiHtr-uBKzCUSJc3TfsRYeSvALEQ=", "https://media.istockphoto.com/id/1291984656/photo/background-of-paper-indian-money-100-banknotes-500-banknotes.jpg?s=1024x1024&w=is&k=20&c=-udTpvt6u3b_G0-XiHtr-uBKzCUSJc3TfsRYeSvALEQ=", "https://images.pexels.com/photos/210679/pexels-photo-210679.jpeg?auto=compress&cs=tinysrgb&w=600"],
-          status: 'pending',
-          createdAt: "2025-02-25T12:00:00Z"
-        };
+     
         
         // Simulate network delay
         await new Promise(resolve => setTimeout(resolve, 500));
         
-        setCampaign(mockData);
+        setCampaign(Selectedcampaign);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An unknown error occurred');
       } finally {
@@ -99,12 +70,12 @@ const CampaignDetailsModal: React.FC<CampaignDetailsModalProps> = ({
       }
     };
 
-    if (isOpen && campaignId) {
+    if (isOpen && Selectedcampaign) {
       fetchCampaignDetails();
       setActiveTab("details");
       setSelectedImage(null);
     }
-  }, [campaignId, isOpen]);
+  }, [Selectedcampaign, isOpen]);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -143,7 +114,9 @@ const CampaignDetailsModal: React.FC<CampaignDetailsModalProps> = ({
 
   const navigateImage = (direction: 'next' | 'prev') => {
     if (!campaign) return;
-    const allImages = [campaign.coverImage, ...campaign.proofImages];
+    //Proofs_image_urls can be a null value Error
+    
+    const allImages = [campaign.cover_image_url, ...campaign.proof_image_urls];
     let newIndex = currentImageIndex;
     
     if (direction === 'next') {
@@ -227,7 +200,7 @@ const CampaignDetailsModal: React.FC<CampaignDetailsModalProps> = ({
               <DialogHeader className="px-6 pt-6 pb-0 flex-shrink-0">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                   <DialogTitle className="text-xl font-bold">Campaign #{campaign.id}</DialogTitle>
-                  {getStatusBadge(campaign.status)}
+                  {getStatusBadge(campaign.approval_status)}
                 </div>
                 <DialogDescription className="text-base font-medium mt-1">{campaign.title}</DialogDescription>
               </DialogHeader>
@@ -253,7 +226,7 @@ const CampaignDetailsModal: React.FC<CampaignDetailsModalProps> = ({
                         <div className="p-4 bg-gray-50 rounded-lg border border-gray-100">
                           <div className="space-y-1.5">
                             <h3 className="text-sm font-medium text-gray-500">Requested on</h3>
-                            <p className="font-medium">{formatDate(campaign.createdAt)}</p>
+                            <p className="font-medium">{formatDate(campaign.created_at)}</p>
                           </div>
                         </div>
                         
@@ -263,7 +236,7 @@ const CampaignDetailsModal: React.FC<CampaignDetailsModalProps> = ({
                               <h3 className="text-sm font-medium text-gray-500">Beneficiary Name</h3>
                               <div className="flex items-center">
                                 <User className="h-4 w-4 text-gray-400 mr-2" />
-                                <p className="font-medium">{campaign.beneficiaryName}</p>
+                                <p className="font-medium">{campaign.beneficiary_name}</p>
                               </div>
                             </div>
                           </div>
@@ -273,7 +246,7 @@ const CampaignDetailsModal: React.FC<CampaignDetailsModalProps> = ({
                               <h3 className="text-sm font-medium text-gray-500">Hosted By</h3>
                               <div className="flex items-center">
                                 <User className="h-4 w-4 text-gray-400 mr-2" />
-                                <p className="font-medium">{campaign.hostedBy}</p>
+                                <p className="font-medium">{campaign.hosted_by}</p>
                               </div>
                             </div>
                           </div>
@@ -283,7 +256,7 @@ const CampaignDetailsModal: React.FC<CampaignDetailsModalProps> = ({
                               <h3 className="text-sm font-medium text-gray-500">Relationship</h3>
                               <div className="flex items-center">
                                 <Users className="h-4 w-4 text-gray-400 mr-2" />
-                                <p className="font-medium">{campaign.relationshipToBeneficiary}</p>
+                                <p className="font-medium">{campaign.relationship}</p>
                               </div>
                             </div>
                           </div>
@@ -293,7 +266,7 @@ const CampaignDetailsModal: React.FC<CampaignDetailsModalProps> = ({
                               <h3 className="text-sm font-medium text-gray-500">Fundraising Goal</h3>
                               <div className="flex items-center">
                                 <Wallet className="h-4 w-4 text-gray-400 mr-2" />
-                                <p className="font-medium text-green-600">{formatCurrency(campaign.fundRaisingGoal)}</p>
+                                <p className="font-medium text-green-600">{formatCurrency(campaign.goal)}</p>
                               </div>
                             </div>
                           </div>
@@ -303,7 +276,7 @@ const CampaignDetailsModal: React.FC<CampaignDetailsModalProps> = ({
                               <h3 className="text-sm font-medium text-gray-500">Campaign Deadline</h3>
                               <div className="flex items-center">
                                 <Calendar className="h-4 w-4 text-gray-400 mr-2" />
-                                <p className="font-medium">{formatDate(campaign.campaignDeadline)}</p>
+                                <p className="font-medium">{formatDate(campaign.deadline)}</p>
                               </div>
                             </div>
                           </div>
@@ -313,7 +286,7 @@ const CampaignDetailsModal: React.FC<CampaignDetailsModalProps> = ({
                               <h3 className="text-sm font-medium text-gray-500">Wallet Address</h3>
                               <div className="flex items-center">
                                 <Wallet className="h-4 w-4 text-gray-400 mr-2" />
-                                <p className="font-medium font-mono text-sm overflow-hidden text-ellipsis">{campaign.walletAddress}</p>
+                                <p className="font-medium font-mono text-sm overflow-hidden text-ellipsis">{campaign.wallet_id}</p>
                                 <Button variant="ghost" size="sm" className="ml-2 h-6 w-6 p-0">
                                   <LinkIcon className="h-3 w-3" />
                                 </Button>
@@ -332,7 +305,7 @@ const CampaignDetailsModal: React.FC<CampaignDetailsModalProps> = ({
                               <FileText className="h-5 w-5 text-blue-500 mt-1 flex-shrink-0" />
                               <div>
                                 <h3 className="text-lg font-semibold text-blue-800 mb-2">Brief Description</h3>
-                                <p className="text-blue-700">{truncateBriefDescription(campaign.briefDescription)}</p>
+                                <p className="text-blue-700">{truncateBriefDescription(campaign.description)}</p>
                               </div>
                             </div>
                           </div>
@@ -340,7 +313,7 @@ const CampaignDetailsModal: React.FC<CampaignDetailsModalProps> = ({
                           <div className="bg-white border border-gray-100 rounded-lg p-6 shadow-sm">
                             <h3 className="text-lg font-semibold text-gray-800 mb-4">Campaign Story</h3>
                             <div className="prose max-w-none">
-                              <p className="text-gray-700 whitespace-pre-line leading-relaxed">{campaign.description}</p>
+                              <p className="text-gray-700 whitespace-pre-line leading-relaxed">{campaign.story}</p>
                             </div>
                           </div>
                         </CardContent>
@@ -356,7 +329,7 @@ const CampaignDetailsModal: React.FC<CampaignDetailsModalProps> = ({
                             onClick={() => openImageViewer(campaign.coverImage, 0)}
                           >
                             <img 
-                              src={campaign.coverImage} 
+                              src={campaign.cover_image_url} 
                               alt="Campaign cover" 
                               className="w-full h-auto object-cover"
                             />
@@ -366,7 +339,8 @@ const CampaignDetailsModal: React.FC<CampaignDetailsModalProps> = ({
                         <div className="space-y-4">
                           <h3 className="text-base font-semibold text-gray-800">Supporting Documents</h3>
                           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-4">
-                            {campaign.proofImages.map((img, index) => (
+                          //Error here campaign.proof_image_urls can be null
+                            {campaign.proof_image_urls.map((img, index) => (
                               <div 
                                 key={index} 
                                 className="rounded-lg overflow-hidden border shadow-sm hover:shadow-md transition-shadow duration-200 group cursor-pointer"
