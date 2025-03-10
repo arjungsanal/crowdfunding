@@ -1,94 +1,57 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { LayoutIcon, Eye, CheckCircle, XCircle } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CampaignDetailsModal from "./viewDetails";
 import { RejectionModal } from "./rejection";
 import { Badge } from "@/components/ui/badge";
+import { fetchAllFromTable } from "@/util/adminFunctions";
+import { supabase } from "@/util/supabse";
+import { Database } from "@/types/supabse";
+import { GetServerSideProps, NextPage } from "next";
 
-interface Campaign {
-    id: number;
-    daysAgo: number;
-    goal: { toLocaleString: () => string };
-    rejectionReason?: string;
+// Define types for your component props
+type Campaign = Database['public']['Tables']['campaigns']['Row']
+
+interface CampaignsPageProps {
+  campaigns: Campaign[];
+  error?: string;
+}
+
+export const getServerSideProps: GetServerSideProps<CampaignsPageProps> = async () => {
+  try {
+    // Fetch all campaigns
+    const { data, error } = await supabase
+      .from('campaigns')
+      .select('*')
+    
+    if (error) throw error
+    
+    return {
+      props: {
+        campaigns: data || [],
+      },
+    }
+  } catch (error) {
+    console.error('Error fetching campaigns:', error)
+    return {
+      props: {
+        campaigns: [],
+        error: error instanceof Error ? error.message : 'An unknown error occurred',
+      },
+    }
   }
-
-  // Sample data for pending campaigns
-const initialPendingCampaigns = [
-    { id: 1, daysAgo: 2, goal: { toLocaleString: () => "25,000" } },
-    { id: 2, daysAgo: 3, goal: { toLocaleString: () => "15,000" } },
-    { id: 3, daysAgo: 1, goal: { toLocaleString: () => "30,000" } },
-  ];
-
-  
-  
-  // Sample data for rejected campaigns
-  const initialRejectedCampaigns = [
-    { id: 1, daysAgo: 7, goal: { toLocaleString: () => "20,000" }, rejectionReason: "Incomplete documentation" },
-    { id: 2, daysAgo: 10, goal: { toLocaleString: () => "40,000" }, rejectionReason: "Outside of funding scope" },
-  ];
-  
-
-// Pending Requests Component
-export const PendingRequests: React.FC = () => {
-    const [pendingCampaigns, setPendingCampaigns] = useState<Campaign[]>(initialPendingCampaigns);
-    const [rejectedCampaigns, setRejectedCampaigns] = useState<Campaign[]>(initialRejectedCampaigns);
-    const [selectedCampaignId, setSelectedCampaignId] = useState<number | null>(null);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isRejectionModalOpen, setIsRejectionModalOpen] = useState(false);
-  
-    const handleViewDetails = (id: number) => {
-      setSelectedCampaignId(id);
-      setIsModalOpen(true);
-    };
-  
-    const handleCloseModal = () => {
-      setIsModalOpen(false);
-    };
-  
-    const handleApproveCampaign = (id: number) => {
-      // Logic to approve campaign
-      console.log(`Approving campaign ${id}`);
-      setPendingCampaigns(pendingCampaigns.filter(campaign => campaign.id !== id));
-      setIsModalOpen(false);
-    };
-  
-    const handleOpenRejectionModal = (id: number) => {
-      setSelectedCampaignId(id);
-      setIsRejectionModalOpen(true);
-    };
-  
-    const handleCloseRejectionModal = () => {
-      setIsRejectionModalOpen(false);
-    };
-  
-    const handleRejectCampaign = (reason: string) => {
-      if (selectedCampaignId === null) return;
-      
-      // Find the campaign to reject
-      const campaignToReject = pendingCampaigns.find(campaign => campaign.id === selectedCampaignId);
-      if (!campaignToReject) return;
-      
-      // Add the campaign to rejected list with reason
-      const rejectedCampaign = {
-        ...campaignToReject,
-        rejectionReason: reason
-      };
-      
-      setRejectedCampaigns([...rejectedCampaigns, rejectedCampaign]);
-      
-      // Remove from pending list
-      setPendingCampaigns(pendingCampaigns.filter(campaign => campaign.id !== selectedCampaignId));
-      
-      setIsRejectionModalOpen(false);
-    };
-  
+}
+export const  PendingRequests: NextPage<CampaignsPageProps> = ({ campaigns, error }) => {
+    if (error) {
+      return <div className="error-container">Error loading campaigns: {error}</div>
+    }
     return (
       <div>
         <h2 className="text-2xl font-bold mb-6">Pending Approval Requests</h2>
         <Card className="border-0 shadow-sm overflow-hidden">
           <div className="divide-y">
-            {pendingCampaigns.map((campaign) => (
+            {campaigns.map((campaign) => (
               <div key={campaign.id} className="p-4 hover:bg-gray-50 transition-colors">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                   <div className="flex items-center">
@@ -100,7 +63,7 @@ export const PendingRequests: React.FC = () => {
                         <h4 className="font-semibold">Campaign #{campaign.id}</h4>
                         <Badge variant="outline" className="ml-2 text-amber-600 bg-amber-50">Pending</Badge>
                       </div>
-                      <p className="text-sm text-gray-500">Requested: {campaign.daysAgo} days ago</p>
+                      <p className="text-sm text-gray-500">Requested: {campaign.created_at} days ago</p>
                       <p className="text-sm text-gray-600 mt-1">Fundraising goal: ${campaign.goal.toLocaleString()}</p>
                     </div>
                   </div>
@@ -109,7 +72,7 @@ export const PendingRequests: React.FC = () => {
                       variant="outline" 
                       size="sm" 
                       className="border-blue-500 text-blue-600 hover:bg-blue-50"
-                      onClick={() => handleViewDetails(campaign.id)}
+                      onClick={()=>console.log("View Details")}
                     >
                       <Eye className="mr-1 h-4 w-4" />
                       View Details
@@ -118,7 +81,7 @@ export const PendingRequests: React.FC = () => {
                       variant="outline" 
                       size="sm" 
                       className="border-green-500 text-green-600 hover:bg-green-50"
-                      onClick={() => handleApproveCampaign(campaign.id)}
+                      onClick={()=>console.log("Approve Campaign")}
                     >
                       <CheckCircle className="mr-1 h-4 w-4" />
                       Approve
@@ -127,7 +90,7 @@ export const PendingRequests: React.FC = () => {
                       variant="outline" 
                       size="sm" 
                       className="border-red-500 text-red-600 hover:bg-red-50"
-                      onClick={() => handleOpenRejectionModal(campaign.id)}
+                      onClick={()=>console.log("Rejection")}
                     >
                       <XCircle className="mr-1 h-4 w-4" />
                       Reject
@@ -138,22 +101,23 @@ export const PendingRequests: React.FC = () => {
             ))}
           </div>
         </Card>
+
         
         {/* Campaign Details Modal */}
-        <CampaignDetailsModal
-          campaignId={selectedCampaignId}
-          isOpen={isModalOpen}
-          onClose={handleCloseModal}
-          onApprove={handleApproveCampaign}
-          onReject={handleOpenRejectionModal}
-        />
+        {/* <CampaignDetailsModal
+        //   campaignId={selectedCampaignId}
+        //   isOpen={isModalOpen}
+        //   onClose={handleCloseModal}
+        //   onApprove={handleApproveCampaign}
+        //   onReject={handleOpenRejectionModal}
+        /> */}
   
         {/* Rejection Reason Modal */}
-        <RejectionModal
-          isOpen={isRejectionModalOpen}
-          onClose={handleCloseRejectionModal}
-          onReject={handleRejectCampaign}
-        />
+        {/* <RejectionModal
+        //   isOpen={isRejectionModalOpen}
+        //   onClose={handleCloseRejectionModal}
+        //   onReject={handleRejectCampaign}
+        /> */}
       </div>
     );
   };

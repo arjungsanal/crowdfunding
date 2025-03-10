@@ -15,8 +15,8 @@ import { Textarea } from "@/components/ui/textarea";
 import CampaignDetailsModal from './viewDetails';
 import { Database } from '@/types/supabse';
 import { DashboardContent } from './dashboardContent';
-import { LoginForm } from './login';
-import { PendingRequests } from './pending';
+import { LoginForm } from './login'; 
+import { PendingRequests } from './pending'; 
 import { RejectedRequests } from './rejected';
 import { ApprovedRequests } from './approved';
 
@@ -54,7 +54,7 @@ const AdminDashboard: React.FC = () => {
       case 'dashboard':
         return <DashboardContent />;
       case 'pending':
-        return <PendingRequests />;
+        return <PendingRequests campaigns={[]} />;
       case 'approved':
         return <ApprovedRequests />;
       case 'rejected':
