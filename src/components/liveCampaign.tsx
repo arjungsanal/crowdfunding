@@ -51,7 +51,7 @@ function LiveCampaign() {
                         variant="ghost" 
                         className="flex items-center gap-2 text-sm sm:text-base hover:bg-gray-100"
                     >
-                        See More
+                        <Link href="/listings">See More</Link>
                         <ArrowRight className="h-4 w-4" />
                     </Button>
                 </Link>

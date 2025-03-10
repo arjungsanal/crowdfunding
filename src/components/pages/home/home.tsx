@@ -5,6 +5,8 @@ import LiveCampaign from "@/components/liveCampaign"
 import Navbar from "@/components/navbar"
 import PlatformFeatures from "@/components/platformFeatures"
 import StepsSection from "@/components/stepsSection"
+import { Button } from "@/components/ui/button"
+import Link from "next/link"
 
 
 export const HomePage = () => {
@@ -26,12 +28,12 @@ export const HomePage = () => {
           <p className="mt-6 text-lg text-gray-600 max-w-2xl mx-auto">
             Join a global community of changemakers. Your support, no matter the size, helps create a better future for everyone.
           </p>
-          <button className="mt-10 px-10 py-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition duration-300 transform hover:scale-105">
-            Start Making A Difference
-          </button>
+          <Button asChild className="mt-10 px-10 py-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition duration-300 transform hover:scale-105">
+      <Link href="/listings">Start Making A Difference</Link>
+    </Button>
         </div>
         {/* Gradient overlay for a modern touch */}
-        <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-primary/50 to-transparent"></div>
+        {/* <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-primary/50 to-transparent"></div> */}
       </section>
 
       <Footer />
