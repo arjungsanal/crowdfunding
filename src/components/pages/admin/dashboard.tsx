@@ -61,13 +61,13 @@ const AdminDashboard: React.FC = () => {
   const renderContent = () => {
     switch (activeView) {
       case 'dashboard':
-        return <DashboardContent />;
+        return <DashboardContent  />; 
       case 'pending':
         return <PendingRequests campaigns={campaigns.filter(c => c.approval_status === 'pending')} />;
       case 'approved':
         return <ApprovedRequests />;
       case 'rejected':
-        return <RejectedRequests />;
+        return <RejectedRequests campaigns={campaigns.filter(c => c.approval_status === 'rejected')} />;
       default:
         return <DashboardContent />;
     }
