@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 function HeroSection() {
   return (
@@ -15,7 +16,7 @@ function HeroSection() {
           </p>
           <div>
             <Button size="lg" asChild>
-              <a href="/campaign/create">Start a Campaign</a>
+              <Link href="/campaign">Start a Campaign</Link>
             </Button>
           </div>
         </div>

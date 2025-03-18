@@ -17,65 +17,25 @@ import { Database } from '@/types/supabse';
 
 type Campaign = Database["public"]["Tables"]["campaigns"]["Row"];
 
-
 interface CampaignDetailsModalProps {
-  Selectedcampaign : Campaign;
+  campaign: Campaign;
   isOpen: boolean;
   onClose: () => void;
-  onApprove: (id: string) => void;
-  onReject: (id: string) => void;
-  viewOnly?: boolean; // Add this line - optional prop
+  onApprove: () => void;
+  onReject: () => void;
 }
 
 const CampaignDetailsModal: React.FC<CampaignDetailsModalProps> = ({
-  Selectedcampaign,
+  campaign,
   isOpen,
   onClose,
   onApprove,
   onReject
 }) => {
-  const [campaign, setCampaign] = useState<Campaign | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<string>("details");
+  const [error, setError] = useState<string | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
-
-  useEffect(() => {
-    const fetchCampaignDetails = async () => {
-      if (!Selectedcampaign) return;
-      
-      setLoading(true);
-      setError(null);
-      
-      try {
-        // In a real implementation, this would be an API call to your backend
-        // Replace with your actual API endpoint
-        // const response = await fetch(`/api/campaigns/${campaignId}`);
-        // if (!response.ok) throw new Error('Failed to fetch campaign details');
-        // const data = await response.json();
-        
-        // For demo purposes, mock data is used
-        // In production, replace this with actual API call
-     
-        
-        // Simulate network delay
-        await new Promise(resolve => setTimeout(resolve, 500));
-        
-        setCampaign(Selectedcampaign);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An unknown error occurred');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (isOpen && Selectedcampaign) {
-      fetchCampaignDetails();
-      setActiveTab("details");
-      setSelectedImage(null);
-    }
-  }, [Selectedcampaign, isOpen]);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -88,7 +48,7 @@ const CampaignDetailsModal: React.FC<CampaignDetailsModalProps> = ({
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'USD'
+      currency: 'INR'
     }).format(amount);
   };
 
@@ -113,23 +73,21 @@ const CampaignDetailsModal: React.FC<CampaignDetailsModalProps> = ({
   };
 
   const navigateImage = (direction: 'next' | 'prev') => {
-    if (!campaign) return;
-    //Proofs_image_urls can be a null value Error
+    if (!campaign?.cover_image_url) return;
     
-    const allImages = [campaign.cover_image_url, ...campaign.proof_image_urls];
-    let newIndex = currentImageIndex;
+    const allImages = [
+      campaign.cover_image_url,
+      ...(campaign.proof_image_urls || [])
+    ];
     
-    if (direction === 'next') {
-      newIndex = (currentImageIndex + 1) % allImages.length;
-    } else {
-      newIndex = (currentImageIndex - 1 + allImages.length) % allImages.length;
-    }
+    let newIndex = direction === 'next'
+      ? (currentImageIndex + 1) % allImages.length
+      : (currentImageIndex - 1 + allImages.length) % allImages.length;
     
     setCurrentImageIndex(newIndex);
     setSelectedImage(allImages[newIndex]);
   };
 
-  // Truncate brief description to 30 words
   const truncateBriefDescription = (text: string, maxWords = 30) => {
     const words = text.split(' ');
     if (words.length <= maxWords) return text;
@@ -140,11 +98,7 @@ const CampaignDetailsModal: React.FC<CampaignDetailsModalProps> = ({
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogTitle></DialogTitle>
       <DialogContent className="sm:max-w-4xl max-h-[90vh] flex flex-col p-0">
-        {loading ? (
-          <div className="flex items-center justify-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-          </div>
-        ) : error ? (
+        {error ? (
           <div className="p-6 text-center">
             <XCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900">Error Loading Campaign</h3>
@@ -322,45 +276,48 @@ const CampaignDetailsModal: React.FC<CampaignDetailsModalProps> = ({
                     
                     <TabsContent value="images" className="px-6 pb-6 data-[state=active]:block">
                       <div className="space-y-6">
-                        <div className="space-y-3">
-                          <h3 className="text-base font-semibold text-gray-800">Campaign Cover</h3>
-                          <div 
-                            className="rounded-lg overflow-hidden border shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer"
-                            onClick={() => openImageViewer(campaign.coverImage, 0)}
-                          >
-                            <img 
-                              src={campaign.cover_image_url} 
-                              alt="Campaign cover" 
-                              className="w-full h-auto object-cover"
-                            />
+                        {campaign.cover_image_url && (
+                          <div className="space-y-3">
+                            <h3 className="text-base font-semibold text-gray-800">Campaign Cover</h3>
+                            <div 
+                              className="rounded-lg overflow-hidden border shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer"
+                              // onClick={() => openImageViewer(campaign.cover_image_url, 0)}
+                            >
+                              <img 
+                                src={campaign.cover_image_url} 
+                                alt="Campaign cover" 
+                                className="w-full h-auto object-cover"
+                              />
+                            </div>
                           </div>
-                        </div>
+                        )}
                         
-                        <div className="space-y-4">
-                          <h3 className="text-base font-semibold text-gray-800">Supporting Documents</h3>
-                          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-4">
-                          //Error here campaign.proof_image_urls can be null
-                            {campaign.proof_image_urls.map((img, index) => (
-                              <div 
-                                key={index} 
-                                className="rounded-lg overflow-hidden border shadow-sm hover:shadow-md transition-shadow duration-200 group cursor-pointer"
-                                onClick={() => openImageViewer(img, index + 1)}
-                              >
-                                <div className="relative">
-                                  <img 
-                                    src={img} 
-                                    alt={`Supporting document ${index + 1}`} 
-                                    className="w-full h-48 object-cover"
-                                  />
-                                  <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-opacity duration-200"></div>
+                        {campaign.proof_image_urls && campaign.proof_image_urls.length > 0 && (
+                          <div className="space-y-4">
+                            <h3 className="text-base font-semibold text-gray-800">Supporting Documents</h3>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-4">
+                              {campaign.proof_image_urls.map((img, index) => (
+                                <div 
+                                  key={index} 
+                                  className="rounded-lg overflow-hidden border shadow-sm hover:shadow-md transition-shadow duration-200 group cursor-pointer"
+                                  onClick={() => openImageViewer(img, index + 1)}
+                                >
+                                  <div className="relative">
+                                    <img 
+                                      src={img} 
+                                      alt={`Supporting document ${index + 1}`} 
+                                      className="w-full h-48 object-cover"
+                                    />
+                                    <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-opacity duration-200"></div>
+                                  </div>
+                                  <div className="p-3 bg-gray-50">
+                                    <p className="text-sm text-gray-600">Supporting document #{index + 1}</p>
+                                  </div>
                                 </div>
-                                <div className="p-3 bg-gray-50">
-                                  <p className="text-sm text-gray-600">Supporting document #{index + 1}</p>
-                                </div>
-                              </div>
-                            ))}
+                              ))}
+                            </div>
                           </div>
-                        </div>
+                        )}
                       </div>
                     </TabsContent>
                   </ScrollArea>
@@ -373,7 +330,7 @@ const CampaignDetailsModal: React.FC<CampaignDetailsModalProps> = ({
                     <Button 
                       variant="outline" 
                       className="border-red-500 text-red-600 hover:bg-red-50 flex-1 sm:flex-none"
-                      onClick={() => onReject(campaign.id)}
+                      onClick={onReject}
                     >
                       <XCircle className="mr-2 h-4 w-4" />
                       Reject
@@ -381,7 +338,7 @@ const CampaignDetailsModal: React.FC<CampaignDetailsModalProps> = ({
                     <Button 
                       variant="outline" 
                       className="border-green-500 text-green-600 hover:bg-green-50 flex-1 sm:flex-none"
-                      onClick={() => onApprove(campaign.id)}
+                      onClick={onApprove}
                     >
                       <CheckCircle className="mr-2 h-4 w-4" />
                       Approve

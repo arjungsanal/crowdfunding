@@ -7,6 +7,7 @@ interface RejectionModalProps {
     isOpen: boolean;
     onClose: () => void;
     onReject: (reason: string) => void;
+    campaignId : string;
   }
   
  export const RejectionModal: React.FC<RejectionModalProps> = ({ isOpen, onClose, onReject }) => {

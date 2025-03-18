@@ -64,6 +64,33 @@ export const PendingRequests: NextPage<CampaignsPageProps> = ({ campaigns, error
     }
   };
 
+  // Reject campaign function (you can add Supabase logic here)
+  const handleRejectCampaign = async (reason: string) => {
+    if (!selectedCampaign) return;
+
+    const { error } = await supabase
+      .from("campaigns")
+      .update({ status: "rejected", rejection_reason: reason })
+      .eq("id", selectedCampaign.id);
+
+    if (error) {
+      console.error("Rejection error:", error);
+    } else {
+      console.log("Campaign rejected:", selectedCampaign.id);
+      handleCloseRejectionModal();
+    }
+  };
+
+  const handleApproveCampaignClick = (campaign: Campaign) => {
+    setSelectedCampaign(campaign);
+    handleApproveCampaign();
+  };
+
+  const handleRejectCampaignClick = (campaign: Campaign) => {
+    setSelectedCampaign(campaign);
+    handleOpenRejectionModal();
+  };
+
   return (
     <div>
       <h2 className="text-2xl font-bold mb-6">Pending Approval Requests</h2>
@@ -99,7 +126,7 @@ export const PendingRequests: NextPage<CampaignsPageProps> = ({ campaigns, error
                     variant="outline"
                     size="sm"
                     className="border-green-500 text-green-600 hover:bg-green-50"
-                    onClick={handleApproveCampaign}
+                    onClick={() => handleApproveCampaignClick(campaign)}
                   >
                     <CheckCircle className="mr-1 h-4 w-4" />
                     Approve
@@ -108,7 +135,7 @@ export const PendingRequests: NextPage<CampaignsPageProps> = ({ campaigns, error
                     variant="outline"
                     size="sm"
                     className="border-red-500 text-red-600 hover:bg-red-50"
-                    onClick={handleOpenRejectionModal}
+                    onClick={() => handleRejectCampaignClick(campaign)}
                   >
                     <XCircle className="mr-1 h-4 w-4" />
                     Reject
@@ -132,13 +159,14 @@ export const PendingRequests: NextPage<CampaignsPageProps> = ({ campaigns, error
       )}
 
       {/* Rejection Modal */}
-      {/* {selectedCampaign && (
+      {selectedCampaign && (
         <RejectionModal
           isOpen={isRejectionModalOpen}
           onClose={handleCloseRejectionModal}
-          campaignId={selectedCampaign.id}
+          campaignId={selectedCampaign.id} 
+          onReject={handleRejectCampaign}
         />
-      )} */}
+      )}
     </div>
   );
 };
