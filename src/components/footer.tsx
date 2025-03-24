@@ -17,7 +17,9 @@ function Footer() {
 
           {/* Copyright */}
           <div className="text-sm text-gray-600 dark:text-gray-400">
+            <Link href="https://github.com/arjungsanal/crowdfunding">
             <p>Developed by FAS | ©2025</p>
+            </Link>
           </div>
 
           {/* Contact Button */}
