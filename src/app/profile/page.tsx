@@ -13,6 +13,7 @@ import type React from "react"
 import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
 import YourCampaign from "@/components/pages/profile/yourCampaign"
+import Link from "next/link"
 
 
 export default function ProfilePage() {
@@ -167,7 +168,7 @@ export default function ProfilePage() {
                     <LogOut className="h-4 w-4 mr-2" />
                     Sign Out
                   </Button>
-                  <Button 
+                  {/* <Button 
                     type="button"
                     variant="destructive" 
                     onClick={handleDeleteAccount}
@@ -175,7 +176,7 @@ export default function ProfilePage() {
                   >
                     <Trash2 className="h-4 w-4 mr-2" />
                     Delete Account
-                  </Button>
+                  </Button> */}
                 </div>
                 <Button type="submit" className="flex-1 sm:flex-none">
                   Update Profile
@@ -243,7 +244,7 @@ export default function ProfilePage() {
             
             <div className="mt-6 flex justify-center">
               <Button variant="outline" className="text-sm">
-                Create New Campaign
+                <Link href='/campaign'>Create New Campaign</Link>
               </Button>
             </div>
           </div>
