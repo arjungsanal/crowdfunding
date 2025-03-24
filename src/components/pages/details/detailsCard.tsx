@@ -1,10 +1,18 @@
-import React from 'react';
+"use client";
+
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Share2 } from "lucide-react";
+import ContributeModal from "./contributeModel";
 
 const FundraisingCard = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+
   const campaignData = {
     title: "Help Save the Local Library",
     description: "Our local library needs urgent renovation to continue serving our community. Your contribution will help maintain this vital educational resource for future generations.",
@@ -17,7 +25,7 @@ const FundraisingCard = () => {
   const progress = (campaignData.amountCollected / campaignData.totalAmount) * 100;
 
   return (
-    <div className=" flex  justify-center bg-slate-100 py-10">
+    <div className="flex justify-center bg-slate-100 py-10">
       <div className="w-full max-w-6xl"> {/* Increased width */}
         <Card className="border-0 shadow-lg bg-white rounded-xl overflow-hidden">
           <CardHeader className="pb-4"> {/* Reduced padding */}
@@ -83,6 +91,7 @@ const FundraisingCard = () => {
                 {/* Buttons */}
                 <div className="flex gap-3"> {/* Reduced gap */}
                   <Button 
+                    onClick={openModal}
                     className="flex-1 h-12 bg-black hover:bg-gray-900 text-white text-base font-semibold hover:scale-[1.02] transition-transform duration-200" // Reduced height and font size
                   >
                     Contribute Now
@@ -100,6 +109,13 @@ const FundraisingCard = () => {
           </CardContent>
         </Card>
       </div>
+      
+      {/* Contribution Modal */}
+      <ContributeModal 
+        isOpen={isModalOpen} 
+        onClose={closeModal} 
+        title={campaignData.title}
+      />
     </div>
   );
 };

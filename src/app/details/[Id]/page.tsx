@@ -5,6 +5,8 @@ import FundraisingCard from "@/components/pages/details/detailsCard";
 import CampaignDetails from "@/components/pages/details/publicDetails";
 import SlidingTabsComponent from "@/components/pages/details/slidingTab";
 
+
+
 export default function Details() {
     return (
         <div>
