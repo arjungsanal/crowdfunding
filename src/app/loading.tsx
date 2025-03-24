@@ -29,15 +29,16 @@ export default function FunLoadingPage() {
           clearInterval(timer);
           return 100;
         }
-        return prevProgress + 2;
+        // Decrease the increment value to make it slower
+        return prevProgress + 1; // Changed from 2 to 1
       });
-    }, 150);
+    }, 300); // Changed from 150 to 300 milliseconds
     
     // Change funny message every few seconds
     const messageTimer = setInterval(() => {
       const randomIndex = Math.floor(Math.random() * funnyMessages.length);
       setLoadingMessage(funnyMessages[randomIndex]);
-    }, 2000);
+    }, 3000); // Changed from 2000 to 3000 milliseconds
     
     // Set initial message
     setLoadingMessage(funnyMessages[Math.floor(Math.random() * funnyMessages.length)]);
@@ -120,4 +121,4 @@ export default function FunLoadingPage() {
       </p>
     </div>
   );
-} 
+}

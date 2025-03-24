@@ -16,7 +16,7 @@ function HeroSection() {
           </p>
           <div>
             <Button size="lg" asChild>
-            <Link href="/campaign">Start a Campaign</Link>
+                 <Link href="/campaign">Start a Campaign</Link>
             </Button>
             
           </div>

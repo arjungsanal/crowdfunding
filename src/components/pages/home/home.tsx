@@ -29,8 +29,8 @@ export const HomePage = () => {
             Join a global community of changemakers. Your support, no matter the size, helps create a better future for everyone.
           </p>
           <Button asChild className="mt-10 px-10 py-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition duration-300 transform hover:scale-105">
-      <Link href="/listings">Start Making A Difference</Link>
-    </Button>
+            <Link href="/listings">Start Making A Difference</Link>
+          </Button>
         </div>
         {/* Gradient overlay for a modern touch */}
         {/* <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-primary/50 to-transparent"></div> */}
