@@ -1,15 +1,16 @@
 "use client";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle } from '@/components/ui/dialog';
-import { Mail, Phone, User, MessageSquare, ArrowRight, MapPin, Facebook, Twitter, Instagram, Globe } from 'lucide-react';
+import { Mail, Phone, User, MessageSquare, ArrowRight, MapPin, Facebook, Twitter, Instagram } from 'lucide-react';
 
 const ContactForm = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -17,7 +18,12 @@ const ContactForm = () => {
     message: '',
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  useEffect(() => {
+    setIsMounted(true);
+    return () => setIsMounted(false);
+  }, []);
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitted(true);
   };
@@ -30,6 +36,20 @@ const ContactForm = () => {
       ...prev,
       [name]: value,
     }));
+  };
+
+  const renderMap = () => {
+    if (!isMounted) return null;
+    
+    return (
+      <iframe
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3945.3291480471335!2d76.88189780942955!3d8.564314696056542!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b05bee2c53009c5%3A0x6510861b288460a1!2sUniversity%20College%20of%20Engineering!5e0!3m2!1sen!2sin!4v1739544010004!5m2!1sen!2sin" 
+        className="w-full h-full border-0"
+        loading="lazy"
+        referrerPolicy="no-referrer-when-downgrade"
+        title="Location Map"
+      />
+    );
   };
 
   return (
@@ -49,7 +69,6 @@ const ContactForm = () => {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Form fields remain the same */}
               <div className="space-y-4">
                 <div className="relative">
                   <Label htmlFor="name" className="text-sm font-medium text-gray-700">
@@ -150,12 +169,7 @@ const ContactForm = () => {
           {/* Map */}
           <Card className="border-none shadow-xl bg-white/80 backdrop-blur-sm overflow-hidden">
             <div className="w-full h-[400px]">
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3945.3291480471335!2d76.88189780942955!3d8.564314696056542!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b05bee2c53009c5%3A0x6510861b288460a1!2sUniversity%20College%20of%20Engineering!5e0!3m2!1sen!2sin!4v1739544010004!5m2!1sen!2sin" 
-                className="w-full h-full border-0"
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-              ></iframe>
+              {renderMap()}
             </div>
           </Card>
 
@@ -175,14 +189,14 @@ const ContactForm = () => {
                 {/* Contact Details */}
                 <div className="flex items-center gap-4">
                   <Mail className="h-6 w-6 text-blue-600 flex-shrink-0" />
-                  <a href="mailto:contact@example.com" className="text-gray-600 hover:text-blue-600 transition-colors">
+                  <a href="mailto:arjungsanal@gmail.com" className="text-gray-600 hover:text-blue-600 transition-colors">
                     arjungsanal@gmail.com
                   </a>
                 </div>
 
                 <div className="flex items-center gap-4">
                   <Phone className="h-6 w-6 text-blue-600 flex-shrink-0" />
-                  <a href="tel:+1234567890" className="text-gray-600 hover:text-blue-600 transition-colors">
+                  <a href="tel:+918848374332" className="text-gray-600 hover:text-blue-600 transition-colors">
                     +91 88483 74332
                   </a>
                 </div>
@@ -194,6 +208,7 @@ const ContactForm = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="p-2 rounded-full bg-gray-100 hover:bg-blue-100 transition-colors"
+                    aria-label="Facebook"
                   >
                     <Facebook className="h-5 w-5 text-blue-600" />
                   </a>
@@ -202,6 +217,7 @@ const ContactForm = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="p-2 rounded-full bg-gray-100 hover:bg-blue-100 transition-colors"
+                    aria-label="Twitter"
                   >
                     <Twitter className="h-5 w-5 text-blue-600" />
                   </a>
@@ -210,17 +226,10 @@ const ContactForm = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="p-2 rounded-full bg-gray-100 hover:bg-blue-100 transition-colors"
+                    aria-label="Instagram"
                   >
                     <Instagram className="h-5 w-5 text-blue-600" />
                   </a>
-                  {/* <a
-                    href="https://wa.me/1234567890"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-2 rounded-full bg-gray-100 hover:bg-blue-100 transition-colors"
-                  >
-                    <Globe className="h-5 w-5 text-blue-600" />
-                  </a> */}
                 </div>
               </div>
             </CardContent>
@@ -229,42 +238,45 @@ const ContactForm = () => {
       </div>
 
       {/* Success Dialog */}
-      <Dialog open={isSubmitted} onOpenChange={setIsSubmitted}>
-        <DialogContent className="sm:max-w-md">
-        <DialogTitle></DialogTitle>
-          <DialogHeader>
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100 mb-4">
-              <svg
-                className="h-6 w-6 text-green-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
+      {isMounted && (
+        <Dialog open={isSubmitted} onOpenChange={setIsSubmitted}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle className="text-center">
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100 mb-4">
+                  <svg
+                    className="h-6 w-6 text-green-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M5 13l4 4L19 7"
+                    ></path>
+                  </svg>
+                </div>
+                <h3 className="text-lg font-semibold">Thank You!</h3>
+              </DialogTitle>
+              <p className="text-center text-gray-500">
+                Thank you for reaching out to us. We will get back to you soon.
+              </p>
+            </DialogHeader>
+            <DialogFooter className="sm:justify-center">
+              <Button
+                type="button"
+                onClick={() => setIsSubmitted(false)}
+                className="bg-gradient-to-r from-blue-600 to-indigo-600"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M5 13l4 4L19 7"
-                ></path>
-              </svg>
-            </div>
-            <h3 className="text-lg font-semibold text-center">Thank You!</h3>
-            <p className="text-center text-gray-500">
-              Thank you for reaching out to us. We will get back to you soon.
-            </p>
-          </DialogHeader>
-          <DialogFooter className="sm:justify-center">
-            <Button
-              type="button"
-              onClick={() => setIsSubmitted(false)}
-              className="bg-gradient-to-r from-blue-600 to-indigo-600"
-            >
-              OK
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+                OK
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 };

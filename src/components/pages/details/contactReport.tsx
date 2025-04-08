@@ -40,12 +40,14 @@ function ContactReport() {
                 Have a question?
               </h2>
             </div>
-            <Button asChild 
-              className="w-36 bg-blue-600 hover:bg-blue-700 font-medium"
-              size="lg"
-            >
-              <Link href="/contact">Contact Us</Link>
-            </Button>
+            <Link href="/contact">
+              <Button 
+                className="w-36 bg-blue-600 hover:bg-blue-700 font-medium"
+                size="lg"
+              >
+                Contact Us
+              </Button>
+            </Link>
           </div>
         </div>
 
