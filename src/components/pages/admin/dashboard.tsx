@@ -24,6 +24,7 @@ const AdminDashboard: React.FC = () => {
   const [activeView, setActiveView] = useState<'dashboard' | 'pending' | 'approved' | 'rejected'>('dashboard');
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [pendingCampaignsCount, setPendingCampaignsCount] = useState<number>(0);
+  const [approvedCampaignsCount, setApprovedCampaignsCount] = useState<number>(0);
   const [rejectedCampaignsCount, setRejectedCampaignsCount] = useState<number>(0);
   const router = useRouter();
 
@@ -40,6 +41,7 @@ const AdminDashboard: React.FC = () => {
       } else {
         setCampaigns(data);
         setPendingCampaignsCount(data.filter(c => c.approval_status === 'pending').length);
+        setApprovedCampaignsCount(data.filter(c => c.approval_status === 'approved').length);
         setRejectedCampaignsCount(data.filter(c => c.approval_status === 'rejected').length);
       }
     };
@@ -65,7 +67,7 @@ const AdminDashboard: React.FC = () => {
       case 'pending':
         return <PendingRequests campaigns={campaigns.filter(c => c.approval_status === 'pending')} />;
       case 'approved':
-        return <ApprovedRequests />;
+        return <ApprovedRequests campaigns={campaigns.filter(c => c.approval_status === 'approved')} />;
       case 'rejected':
         return <RejectedRequests campaigns={campaigns.filter(c => c.approval_status === 'rejected')} />;
       default:
@@ -116,7 +118,7 @@ const AdminDashboard: React.FC = () => {
               >
                 <CheckCircle className="mr-2 h-4 w-4" />
                 Approved
-                <Badge className="ml-2 bg-green-100 text-green-600">3</Badge>
+                <Badge className="ml-2 bg-green-100 text-green-600">{approvedCampaignsCount}</Badge>
               </Button>
               <Button
                 variant={activeView === 'rejected' ? "default" : "ghost"}
