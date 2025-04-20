@@ -14,6 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CheckCircle, XCircle, Calendar, Wallet, User, Users, Link as LinkIcon, FileText, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Database } from '@/types/supabse';
+import { getPublicUrl } from '@/util/helper';
 
 type Campaign = Database["public"]["Tables"]["campaigns"]["Row"];
 
@@ -32,6 +33,12 @@ const CampaignDetailsModal: React.FC<CampaignDetailsModalProps> = ({
   onApprove,
   onReject
 }) => {
+
+  console.log("Campaign Details Modal Props:", { campaign, isOpen, onClose, onApprove, onReject });
+  // testing out values
+  // const publicVlaue = getPublicUrl(campaign.cover_image_url);
+  // console.log(publicVlaue)
+
   const [activeTab, setActiveTab] = useState<string>("details");
   const [error, setError] = useState<string | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -74,18 +81,18 @@ const CampaignDetailsModal: React.FC<CampaignDetailsModalProps> = ({
 
   const navigateImage = (direction: 'next' | 'prev') => {
     if (!campaign?.cover_image_url) return;
-    
+
     const allImages = [
       campaign.cover_image_url,
       ...(campaign.proof_image_urls || [])
     ];
-    
+
     let newIndex = direction === 'next'
       ? (currentImageIndex + 1) % allImages.length
       : (currentImageIndex - 1 + allImages.length) % allImages.length;
-    
+
     setCurrentImageIndex(newIndex);
-    setSelectedImage(allImages[newIndex]);
+    setSelectedImage(getPublicUrl(allImages[newIndex]));
   };
 
   const truncateBriefDescription = (text: string, maxWords = 30) => {
@@ -111,33 +118,33 @@ const CampaignDetailsModal: React.FC<CampaignDetailsModalProps> = ({
             {selectedImage && (
               <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90">
                 <div className="relative w-full h-full max-w-4xl max-h-screen p-4 flex flex-col">
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
+                  <Button
+                    variant="ghost"
+                    size="icon"
                     className="absolute top-2 right-2 text-white hover:bg-gray-800 z-50"
                     onClick={closeImageViewer}
                   >
                     <X className="h-6 w-6" />
                   </Button>
-                  
+
                   <div className="flex-1 flex items-center justify-center">
-                    <img 
-                      src={selectedImage} 
-                      alt="Campaign image" 
+                    <img
+                      src={selectedImage}
+                      alt="Campaign image"
                       className="max-w-full max-h-full object-contain"
                     />
                   </div>
-                  
+
                   <div className="flex justify-between mt-4">
-                    <Button 
-                      variant="outline" 
+                    <Button
+                      variant="outline"
                       className="bg-gray-800 text-white border-gray-700 hover:bg-gray-700"
                       onClick={() => navigateImage('prev')}
                     >
                       <ChevronLeft className="mr-2 h-4 w-4" />
                       Previous
                     </Button>
-                    <Button 
+                    <Button
                       variant="outline"
                       className="bg-gray-800 text-white border-gray-700 hover:bg-gray-700"
                       onClick={() => navigateImage('next')}
@@ -149,7 +156,7 @@ const CampaignDetailsModal: React.FC<CampaignDetailsModalProps> = ({
                 </div>
               </div>
             )}
-            
+
             <div className="flex flex-col h-full max-h-[90vh]">
               <DialogHeader className="px-6 pt-6 pb-0 flex-shrink-0">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
@@ -158,9 +165,9 @@ const CampaignDetailsModal: React.FC<CampaignDetailsModalProps> = ({
                 </div>
                 <DialogDescription className="text-base font-medium mt-1">{campaign.title}</DialogDescription>
               </DialogHeader>
-              
-              <Tabs 
-                defaultValue="details" 
+
+              <Tabs
+                defaultValue="details"
                 value={activeTab}
                 onValueChange={setActiveTab}
                 className="flex flex-col flex-grow overflow-hidden"
@@ -172,7 +179,7 @@ const CampaignDetailsModal: React.FC<CampaignDetailsModalProps> = ({
                     <TabsTrigger value="images">Evidence</TabsTrigger>
                   </TabsList>
                 </div>
-                
+
                 <div className="flex-grow overflow-auto">
                   <ScrollArea className="h-full">
                     <TabsContent value="details" className="px-6 pb-6 data-[state=active]:block">
@@ -183,7 +190,7 @@ const CampaignDetailsModal: React.FC<CampaignDetailsModalProps> = ({
                             <p className="font-medium">{formatDate(campaign.created_at)}</p>
                           </div>
                         </div>
-                        
+
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                           <div className="p-4 bg-white rounded-lg border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-200">
                             <div className="space-y-1.5">
@@ -194,7 +201,7 @@ const CampaignDetailsModal: React.FC<CampaignDetailsModalProps> = ({
                               </div>
                             </div>
                           </div>
-                          
+
                           <div className="p-4 bg-white rounded-lg border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-200">
                             <div className="space-y-1.5">
                               <h3 className="text-sm font-medium text-gray-500">Hosted By</h3>
@@ -204,7 +211,7 @@ const CampaignDetailsModal: React.FC<CampaignDetailsModalProps> = ({
                               </div>
                             </div>
                           </div>
-                          
+
                           <div className="p-4 bg-white rounded-lg border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-200">
                             <div className="space-y-1.5">
                               <h3 className="text-sm font-medium text-gray-500">Relationship</h3>
@@ -214,7 +221,7 @@ const CampaignDetailsModal: React.FC<CampaignDetailsModalProps> = ({
                               </div>
                             </div>
                           </div>
-                          
+
                           <div className="p-4 bg-white rounded-lg border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-200">
                             <div className="space-y-1.5">
                               <h3 className="text-sm font-medium text-gray-500">Fundraising Goal</h3>
@@ -224,7 +231,7 @@ const CampaignDetailsModal: React.FC<CampaignDetailsModalProps> = ({
                               </div>
                             </div>
                           </div>
-                          
+
                           <div className="p-4 bg-white rounded-lg border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-200">
                             <div className="space-y-1.5">
                               <h3 className="text-sm font-medium text-gray-500">Campaign Deadline</h3>
@@ -234,7 +241,7 @@ const CampaignDetailsModal: React.FC<CampaignDetailsModalProps> = ({
                               </div>
                             </div>
                           </div>
-                          
+
                           <div className="p-4 bg-white rounded-lg border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-200">
                             <div className="space-y-1.5">
                               <h3 className="text-sm font-medium text-gray-500">Wallet Address</h3>
@@ -250,7 +257,7 @@ const CampaignDetailsModal: React.FC<CampaignDetailsModalProps> = ({
                         </div>
                       </div>
                     </TabsContent>
-                    
+
                     <TabsContent value="description" className="px-6 pb-6 data-[state=active]:block">
                       <Card className="border-none shadow-none">
                         <CardContent className="p-0 space-y-6">
@@ -263,7 +270,7 @@ const CampaignDetailsModal: React.FC<CampaignDetailsModalProps> = ({
                               </div>
                             </div>
                           </div>
-                          
+
                           <div className="bg-white border border-gray-100 rounded-lg p-6 shadow-sm">
                             <h3 className="text-lg font-semibold text-gray-800 mb-4">Campaign Story</h3>
                             <div className="prose max-w-none">
@@ -273,39 +280,39 @@ const CampaignDetailsModal: React.FC<CampaignDetailsModalProps> = ({
                         </CardContent>
                       </Card>
                     </TabsContent>
-                    
+
                     <TabsContent value="images" className="px-6 pb-6 data-[state=active]:block">
                       <div className="space-y-6">
                         {campaign.cover_image_url && (
                           <div className="space-y-3">
                             <h3 className="text-base font-semibold text-gray-800">Campaign Cover</h3>
-                            <div 
+                            <div
                               className="rounded-lg overflow-hidden border shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer"
-                              // onClick={() => openImageViewer(campaign.cover_image_url, 0)}
+                            onClick={() => openImageViewer(getPublicUrl(campaign.cover_image_url!), 0)}
                             >
-                              <img 
-                                src={campaign.cover_image_url} 
-                                alt="Campaign cover" 
+                              <img
+                                src={campaign.cover_image_url ? getPublicUrl(campaign.cover_image_url) : undefined}
+                                alt="Campaign cover"
                                 className="w-full h-auto object-cover"
                               />
                             </div>
                           </div>
                         )}
-                        
+
                         {campaign.proof_image_urls && campaign.proof_image_urls.length > 0 && (
                           <div className="space-y-4">
                             <h3 className="text-base font-semibold text-gray-800">Supporting Documents</h3>
                             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-4">
                               {campaign.proof_image_urls.map((img, index) => (
-                                <div 
-                                  key={index} 
+                                <div
+                                  key={index}
                                   className="rounded-lg overflow-hidden border shadow-sm hover:shadow-md transition-shadow duration-200 group cursor-pointer"
-                                  onClick={() => openImageViewer(img, index + 1)}
+                                  onClick={() => openImageViewer( getPublicUrl(img), index + 1)}
                                 >
                                   <div className="relative">
-                                    <img 
-                                      src={img} 
-                                      alt={`Supporting document ${index + 1}`} 
+                                    <img
+                                      src={img ? getPublicUrl(img) : undefined}
+                                      alt={`Supporting document ${index + 1}`}
                                       className="w-full h-48 object-cover"
                                     />
                                     <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-opacity duration-200"></div>
@@ -323,20 +330,20 @@ const CampaignDetailsModal: React.FC<CampaignDetailsModalProps> = ({
                   </ScrollArea>
                 </div>
               </Tabs>
-              
+
               <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 flex-shrink-0">
                 <DialogFooter className="flex-col sm:flex-row gap-3 sm:gap-2">
                   <div className="flex gap-2 w-full sm:w-auto">
-                    <Button 
-                      variant="outline" 
+                    <Button
+                      variant="outline"
                       className="border-red-500 text-red-600 hover:bg-red-50 flex-1 sm:flex-none"
                       onClick={onReject}
                     >
                       <XCircle className="mr-2 h-4 w-4" />
                       Reject
                     </Button>
-                    <Button 
-                      variant="outline" 
+                    <Button
+                      variant="outline"
                       className="border-green-500 text-green-600 hover:bg-green-50 flex-1 sm:flex-none"
                       onClick={onApprove}
                     >
