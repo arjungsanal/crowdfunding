@@ -33,21 +33,22 @@ const purposes: Purpose[] = [
 
 const team: TeamMember[] = [
   {
-    name: "Arjun G S",
-    role: "Founder & CEO",
-    image: "https://imgs.search.brave.com/ql4hU-SPpqm8vU1dBZz4dQD4W7O0LemxMt3qsQ-MQE8/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJzLmNvbS9p/bWFnZXMvaGQvcHJl/dHR5LXByb2ZpbGUt/cGljdHVyZXMtbjNn/MDllODAxZzM2ZG1o/MC5qcGc",
-    initials: "A"
-  },
-  {
     name: "Fathima Sulthana H",
     role: "Tech Lead",
-    image: "https://imgs.search.brave.com/3XTvoD3-aTCfEfruafWutlezVEIrhPeBkjr44DtCKFg/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJzLmNvbS9p/bWFnZXMvaGQvcHJl/dHR5LXByb2ZpbGUt/cGljdHVyZXMtNHQ0/eWZyczRtZGg4M2Nr/Ny5qcGc",
+    image: "",
     initials: "F"
   },
   {
+    name: "Arjun G S",
+    role: "Founder & CEO",
+    image: "",
+    initials: "A"
+  },
+
+  {
     name: "Stephy Jacob",
     role: "Operations Lead",
-    image: "https://imgs.search.brave.com/mh04i5y-xX7D2X0Mk77o8TPiPGN8ydBrK-ZG4Cja7-E/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJzLmNvbS9p/bWFnZXMvaGQvcHJl/dHR5LXByb2ZpbGUt/cGljdHVyZXMtbnhr/cHk5ZHUydnFtaXlv/NC5qcGc",
+    image: "",
     initials: "S"
   }
 ]
