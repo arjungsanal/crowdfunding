@@ -37,7 +37,7 @@ export const ApprovedRequests: NextPage<CampaignsPageProps> = ({ campaigns, erro
                     </div>
                   </div>
                 </div>
-              </div>4
+              </div>
               
               
             </div>
