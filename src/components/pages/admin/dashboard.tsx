@@ -28,24 +28,25 @@ const AdminDashboard: React.FC = () => {
   const [rejectedCampaignsCount, setRejectedCampaignsCount] = useState<number>(0);
   const router = useRouter();
 
+  // Function to fetch campaigns and update state
+  const fetchCampaigns = async () => {
+    const { data, error } = await supabase.from('campaigns').select('*');
+    if (error) {
+      console.error('Error fetching campaigns:', error);
+    } else {
+      setCampaigns(data);
+      setPendingCampaignsCount(data.filter(c => c.approval_status === 'pending').length);
+      setApprovedCampaignsCount(data.filter(c => c.approval_status === 'approved').length);
+      setRejectedCampaignsCount(data.filter(c => c.approval_status === 'rejected').length);
+    }
+  };
+
   useEffect(() => {
     // Check authentication status
     const authStatus = localStorage.getItem('isAdminAuthenticated');
     setIsAuthenticated(authStatus === 'true');
 
-    // Fetch campaigns
-    const fetchCampaigns = async () => {
-      const { data, error } = await supabase.from('campaigns').select('*');
-      if (error) {
-        console.error('Error fetching campaigns:', error);
-      } else {
-        setCampaigns(data);
-        setPendingCampaignsCount(data.filter(c => c.approval_status === 'pending').length);
-        setApprovedCampaignsCount(data.filter(c => c.approval_status === 'approved').length);
-        setRejectedCampaignsCount(data.filter(c => c.approval_status === 'rejected').length);
-      }
-    };
-
+    // Fetch campaigns on initial load
     fetchCampaigns();
   }, []);
 
@@ -63,13 +64,28 @@ const AdminDashboard: React.FC = () => {
   const renderContent = () => {
     switch (activeView) {
       case 'dashboard':
-        return <DashboardContent  />; 
+        return <DashboardContent />;
       case 'pending':
-        return <PendingRequests campaigns={campaigns.filter(c => c.approval_status === 'pending')} />;
+        return (
+          <PendingRequests 
+            campaigns={campaigns.filter(c => c.approval_status === 'pending')} 
+            refreshCampaigns={fetchCampaigns}
+          />
+        );
       case 'approved':
-        return <ApprovedRequests campaigns={campaigns.filter(c => c.approval_status === 'approved')} />;
+        return (
+          <ApprovedRequests 
+            campaigns={campaigns.filter(c => c.approval_status === 'approved')} 
+            
+          />
+        );
       case 'rejected':
-        return <RejectedRequests campaigns={campaigns.filter(c => c.approval_status === 'rejected')} />;
+        return (
+          <RejectedRequests 
+            campaigns={campaigns.filter(c => c.approval_status === 'rejected')} 
+            refreshCampaigns={fetchCampaigns}
+          />
+        );
       default:
         return <DashboardContent />;
     }
