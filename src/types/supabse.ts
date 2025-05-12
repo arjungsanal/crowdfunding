@@ -1,6 +1,7 @@
 export type Database = {
   public: {
     Tables: {
+      
       campaigns: {
         Row: {
           id: string; // UUID
@@ -50,6 +51,28 @@ export type Database = {
           relationship?: string;
           approval_status?: 'pending' | 'approved' | 'rejected';
           user_id?: string; // Added user_id field as optional for updates
+        };
+      };
+
+      approved_campaigns: {
+        Row: {
+          id: string; // UUID
+          campaign_id: string; // UUID
+          withdrawal_status: string;
+          amount_raised: number;
+          created_at: string; // Timestamp
+        };
+        Insert: {
+          id?: string; // Auto-generated UUID
+          campaign_id: string; // UUID
+          withdrawal_status: string;
+          amount_raised: number;
+          created_at?: string; // Auto-generated timestamp
+        };
+        Update: {
+          campaign_id?: string; // UUID
+          withdrawal_status: string;
+          amount_raised?: number;
         };
       };
       

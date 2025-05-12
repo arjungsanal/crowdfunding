@@ -25,6 +25,7 @@ interface ContributeModalProps {
   isOpen: boolean;
   onClose: () => void;
   title: string;
+  id :string;
 }
 
 const ContributeModal = ({

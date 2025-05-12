@@ -3,14 +3,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { MapPin, User } from "lucide-react";
+import { Database } from "@/types/supabse";
 
-// Types for our data
-type CampaignerDetails = {
-  campaigner: string;
-  beneficiary: string;
-  relation: string;
-  location: string;
-};
+type Campaign = Database["public"]["Tables"]["campaigns"]["Row"];
 
 type Donation = {
   id: string;
@@ -21,7 +16,7 @@ type Donation = {
 };
 
 type CampaignDetailsProps = {
-  campaignerDetails: CampaignerDetails;
+  campaignerDetails: Campaign;
   recentDonations: Donation[];
 };
 
@@ -37,23 +32,23 @@ const CampaignDetails = ({ campaignerDetails, recentDonations }: CampaignDetails
           <div className="space-y-3">
             <div className="flex items-start space-x-2">
               <span className="text-gray-500 min-w-[100px]">Campaigner:</span>
-              <span className="font-medium">{campaignerDetails.campaigner}</span>
+              <span className="font-medium">{campaignerDetails.hosted_by}</span>
             </div>
             <div className="flex items-start space-x-2">
               <span className="text-gray-500 min-w-[100px]">Beneficiary:</span>
-              <span className="font-medium">{campaignerDetails.beneficiary}</span>
+              <span className="font-medium">{campaignerDetails.beneficiary_name}</span>
             </div>
             <div className="flex items-start space-x-2">
               <span className="text-gray-500 min-w-[100px]">Relation:</span>
-              <span className="font-medium">{campaignerDetails.relation}</span>
+              <span className="font-medium">{campaignerDetails.relationship}</span>
             </div>
-            <div className="flex items-start space-x-2">
+            {/* <div className="flex items-start space-x-2">
               <span className="text-gray-500 min-w-[100px]">Location:</span>
               <div className="flex items-center space-x-1">
                 <MapPin className="h-4 w-4 text-gray-400" />
-                <span className="font-medium">{campaignerDetails.location}</span>
+                <span className="font-medium">{campaignerDetails.}</span>
               </div>
-            </div>
+            </div> */}
           </div>
         </CardContent>
       </Card>

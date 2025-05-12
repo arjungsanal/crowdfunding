@@ -1,16 +1,16 @@
 "use client"
 
-import React, { useState } from 'react';
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { X } from 'lucide-react';
-import { supabase } from '@/util/supabse';
-import { Database } from '@/types/supabse';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/context/AuthContext'; // Import your auth context
+import React, {useState} from 'react';
+import {Button} from "@/components/ui/button";
+import {Input} from "@/components/ui/input";
+import {Textarea} from "@/components/ui/textarea";
+import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
+import {X} from 'lucide-react';
+import {supabase} from '@/util/supabse';
+import {Database} from '@/types/supabse';
+import {useRouter} from 'next/navigation';
+import {useAuth} from '@/context/AuthContext'; // Import your auth context
 
 const CampaignRegistration = () => {
     const router = useRouter();

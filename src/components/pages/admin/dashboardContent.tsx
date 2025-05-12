@@ -1,9 +1,22 @@
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import {  BarChart3, CheckCircle, Layout } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+'use client'
+import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card";
+import {BarChart3, CheckCircle, Layout} from "lucide-react";
+import {Badge} from "@/components/ui/badge";
+import {getTotalAmountRaised} from "@/util/helper";
+import {useEffect, useState} from "react";
 
 // Dashboard content components
-export const DashboardContent: React.FC = () => (
+export const DashboardContent= () => {
+  const [totalFundCollected, setTotalFundCollected] = useState<number>(0)
+  const getTotalFunds = async ()=>{
+    const totalAmount = await getTotalAmountRaised();
+    setTotalFundCollected(totalAmount);
+  }
+  useEffect(() => {
+    getTotalFunds()
+  }, []);
+ 
+  return(
     <div>
       <h2 className="text-2xl font-bold mb-6">Dashboard Overview</h2>
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -16,7 +29,7 @@ export const DashboardContent: React.FC = () => (
             <CardDescription>Overall platform statistics</CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold text-blue-600">$123,456</p>
+            <p className="text-3xl font-bold text-blue-600">₹{totalFundCollected}</p>
           </CardContent>
           <CardFooter className="text-xs text-gray-500">
             Updated today at 9:40 AM
@@ -79,4 +92,5 @@ export const DashboardContent: React.FC = () => (
       </Card>
     </div>
   );
+}
   

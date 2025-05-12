@@ -1,20 +1,21 @@
 "use client";
 
-import React, { useState, useEffect, SVGProps, JSX } from 'react';
-import { LayoutIcon, BarChart3, CheckCircle, XCircle, LogOut } from 'lucide-react';
+import React, {JSX, SVGProps, useEffect, useState} from 'react';
+import {BarChart3, CheckCircle, LayoutIcon, LogOut, XCircle} from 'lucide-react';
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { useRouter } from "next/navigation";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { supabase } from '@/util/supabse';
-import { DashboardContent } from './dashboardContent';
-import { LoginForm } from './login'; 
-import { PendingRequests } from './pending'; 
-import { RejectedRequests } from './rejected';
-import { ApprovedRequests } from './approved';
-import { Database } from '@/types/supabse';
+import {Button} from "@/components/ui/button";
+import {ScrollArea} from "@/components/ui/scroll-area";
+import {useRouter} from "next/navigation";
+import {Badge} from "@/components/ui/badge";
+import {Separator} from "@/components/ui/separator";
+import {supabase} from '@/util/supabse';
+import {DashboardContent} from './dashboardContent';
+import {LoginForm} from './login';
+import {PendingRequests} from './pending';
+import {RejectedRequests} from './rejected';
+import {ApprovedRequests} from './approved';
+import {Database} from '@/types/supabse';
+
 
 // Define types
 type Campaign = Database['public']['Tables']['campaigns']['Row'];
@@ -48,6 +49,7 @@ const AdminDashboard: React.FC = () => {
 
     // Fetch campaigns on initial load
     fetchCampaigns();
+    
   }, []);
 
   const handleLogin = () => {
