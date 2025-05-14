@@ -12,7 +12,7 @@ export type Database = {
           story: string;
           description: string;
           cover_image_url: string | null;
-          proof_image_urls: string[] | null;
+          proof_image_urls: string[] ;
           created_at: string; // Timestamp
           beneficiary_name: string;
           hosted_by: string;

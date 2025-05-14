@@ -59,7 +59,7 @@ const CampaignDetails = ({ campaignerDetails, recentDonations }: CampaignDetails
           <CardTitle className="text-xl font-semibold">Recent Donations</CardTitle>
         </CardHeader>
         <CardContent>
-          <ScrollArea className="h-[250px] pr-4">
+          <ScrollArea className="h-[150px] pr-4">
             <div className="space-y-4">
               {recentDonations.map((donation) => (
                 <div

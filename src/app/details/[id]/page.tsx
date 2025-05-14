@@ -27,7 +27,7 @@ export default async function Details({ params }: { params: { id: string } }) {
             <FundraisingCard campaignData={campaignDetails} campaignStatusDetails={campaignStatusDetails} />
 
             <div className="flex items-center justify-center  bg-gray-100">
-                <SlidingTabsComponent />
+                <SlidingTabsComponent campaignData={campaignDetails}/>
             </div>
 
             <CampaignDetails campaignerDetails={campaignDetails} recentDonations={[{

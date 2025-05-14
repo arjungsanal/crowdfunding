@@ -8,6 +8,7 @@ import { Share2 } from "lucide-react";
 import ContributeModal from "./contributeModel";
 import { Database } from '@/types/supabse';
 import { getPublicUrl } from '@/util/helper';
+import { useToast } from '@/hooks/use-toast';
 
 type campaign = Database['public']['Tables']['campaigns']['Row'];
 type campaignStatus = Database['public']['Tables']['approved_campaigns']['Row'];
@@ -16,14 +17,48 @@ interface FundraisingCardProps {
   campaignStatusDetails: campaignStatus;
 }
 
-
 const FundraisingCard = ({ campaignData, campaignStatusDetails }: FundraisingCardProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [daysLeft, setDaysLeft] = useState(0);
+  const { toast } = useToast();
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
-
+  
+  // Share functionality
+  const handleShare = async () => {
+    // Create the share data
+    const shareData = {
+      title: campaignData.title,
+      text: `Support ${campaignData.title} - ${campaignData.description}`,
+      url: window.location.href, // Current URL
+    };
+    
+    try {
+      // Check if Web Share API is supported
+      if (navigator.share) {
+        await navigator.share(shareData);
+        console.log('Shared successfully');
+      } else {
+        // Fallback for browsers that don't support Web Share API
+        // Copy URL to clipboard
+        await navigator.clipboard.writeText(window.location.href);
+        toast({
+          title: "Link copied!",
+          description: "Campaign link copied to clipboard.",
+          duration: 3000,
+        });
+      }
+    } catch (error) {
+      console.error('Error sharing:', error);
+      toast({
+        title: "Sharing failed",
+        description: "Failed to share campaign. Please try again.",
+        variant: "destructive",
+        duration: 4000,
+      });
+    }
+  };
 
   const progress = (campaignStatusDetails?.amount_raised / campaignData.goal) * 100;
   useEffect(() => {
@@ -122,16 +157,17 @@ const FundraisingCard = ({ campaignData, campaignStatusDetails }: FundraisingCar
                 <div className="flex gap-3"> {/* Reduced gap */}
                   <Button
                     onClick={openModal}
-                    className="flex-1 h-12 bg-black hover:bg-gray-900 text-white text-base font-semibold hover:scale-[1.02] transition-transform duration-200" // Reduced height and font size
+                    className="flex-1 h-12 bg-black hover:bg-gray-900 text-white text-base font-semibold hover:scale-[1.02] transition-transform duration-200"
                   >
                     Contribute Now
                   </Button>
                   <Button
                     variant="outline"
                     size="icon"
-                    className="h-12 w-12 border-2 border-gray-200 hover:bg-gray-50 hover:border-gray-300 transition-colors duration-200" // Reduced height and width
+                    className="h-12 w-12 border-2 border-gray-200 hover:bg-gray-50 hover:border-gray-300 transition-colors duration-200"
+                    onClick={handleShare}
                   >
-                    <Share2 className="h-5 w-5" /> {/* Reduced icon size */}
+                    <Share2 className="h-5 w-5" />
                   </Button>
                 </div>
               </div>
