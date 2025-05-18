@@ -6,9 +6,9 @@ import CampaignDetails from "@/components/pages/details/publicDetails";
 import SlidingTabsComponent from "@/components/pages/details/slidingTab";
 import { campaignStatus, fetchCampaignDetails } from "@/util/helper";
 
+type Params = Promise<{ id: string }>;
 
-
-export default async function Details({ params }: { params: { id: string } }) {
+export default async function Details({ params }: { params: Params}) {
 
     const { id } = await params;
     console.log("Campaign ID:", id);
