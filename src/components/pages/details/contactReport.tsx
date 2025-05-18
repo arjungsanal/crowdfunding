@@ -1,31 +1,76 @@
 "use client";
 
-import { useState } from "react";
+import { useState, ChangeEvent, FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { MessageCircle, AlertCircle, X } from "lucide-react";
 import Link from "next/link";
+import { Database } from "@/types/supabse";
+import { reportCampaign } from "@/util/helper";
 
-function ContactReport() {
+type campaign = Database['public']['Tables']['campaigns']['Row'];
+type FormValue = Database['public']['Tables']['reports']['Insert'];
+
+interface contactReportProps {
+  campaignDetails: campaign,
+}
+
+function ContactReport({ campaignDetails }: contactReportProps) {
   const [isReportOpen, setIsReportOpen] = useState(false);
-  const [selectedReason, setSelectedReason] = useState("");
-  const [otherReason, setOtherReason] = useState("");
+  const [formData, setFormData] = useState<FormValue>({
+    campaign_id: campaignDetails?.id || '',
+    reason: 'suspicious_activity',
+    details: null,
+    reported_by: '', // This will need to be set with user information
+    resolved: false,
+    resolved_at: null,
+    resolved_by: null,
+    resolution_notes: null
+  });
   
   const reportReasons = [
-    "Suspicious activity",
-    "Inappropriate content",
-    "False information",
-    "Harmful behavior",
-    "Privacy violation",
-    "Other"
+    { label: "Suspicious activity", value: "suspicious_activity" },
+    { label: "Inappropriate content", value: "inappropriate_content" },
+    { label: "False information", value: "false_information" },
+    { label: "Harmful behavior", value: "harmful_behavior" },
+    { label: "Privacy violation", value: "privacy_violation" },
+    { label: "Other", value: "other" }
   ];
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    
+    setFormData(prevData => ({
+      ...prevData,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Handle report submission logic here
-    alert(`Report submitted: ${selectedReason === "Other" ? otherReason : selectedReason}`);
-    setIsReportOpen(false);
-    setSelectedReason("");
-    setOtherReason("");
+    
+    try {
+      // Submit the report using your helper function
+      await reportCampaign(formData);
+      console.log(formData);
+      // Reset form and close modal on success
+      setFormData({
+        campaign_id: campaignDetails?.id || '',
+        reason: 'suspicious_activity',
+        details: null,
+        reported_by: '', // Reset to empty or keep current user
+        resolved: false,
+        resolved_at: null,
+        resolved_by: null,
+        resolution_notes: null
+      });
+      setIsReportOpen(false);
+      
+      // Optionally show success message
+      alert("Report submitted successfully");
+    } catch (error) {
+      console.error("Error submitting report:", error);
+      alert("Failed to submit report. Please try again.");
+    }
   };
 
   return (
@@ -93,32 +138,33 @@ function ContactReport() {
                 </label>
                 <select
                   id="reason"
-                  value={selectedReason}
-                  onChange={(e) => setSelectedReason(e.target.value)}
+                  name="reason"
+                  value={formData.reason}
+                  onChange={handleChange}
                   className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   required
                 >
-                  <option value="" disabled>Select a reason</option>
                   {reportReasons.map((reason) => (
-                    <option key={reason} value={reason}>
-                      {reason}
+                    <option key={reason.value} value={reason.value}>
+                      {reason.label}
                     </option>
                   ))}
                 </select>
               </div>
               
-              {selectedReason === "Other" && (
+              {formData.reason === "other" && (
                 <div>
-                  <label htmlFor="otherReason" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="details" className="block text-sm font-medium text-gray-700 mb-1">
                     Please specify
                   </label>
                   <textarea
-                    id="otherReason"
-                    value={otherReason}
-                    onChange={(e) => setOtherReason(e.target.value)}
+                    id="details"
+                    name="details"
+                    value={formData.details || ''}
+                    onChange={handleChange}
                     className="w-full p-2 border border-gray-300 rounded-md h-24 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Please describe the issue..."
-                    required={selectedReason === "Other"}
+                    required={formData.reason === "other"}
                   />
                 </div>
               )}

@@ -75,6 +75,46 @@ export type Database = {
           amount_raised?: number;
         };
       };
+
+      reports: {
+        Row: {
+          id: string; // UUID
+          campaign_id: string; // UUID, foreign key to campaigns table
+          reason: 'suspicious_activity' | 'inappropriate_content' | 'false_information' | 'harmful_behavior' | 'privacy_violation' | 'other';
+          details: string | null;
+          reported_by: string; // UUID of the user who reported
+          created_at: string; // Timestamp
+          updated_at: string; // Timestamp
+          resolved: boolean;
+          resolved_at: string | null; // Timestamp when resolved
+          resolved_by: string | null; // UUID of admin who resolved
+          resolution_notes: string | null;
+        };
+        Insert: {
+          id?: string; // Auto-generated UUID
+          campaign_id: string;
+          reason: 'suspicious_activity' | 'inappropriate_content' | 'false_information' | 'harmful_behavior' | 'privacy_violation' | 'other';
+          details?: string | null;
+          reported_by: string;
+          created_at?: string; // Auto-generated timestamp
+          updated_at?: string; // Auto-generated timestamp
+          resolved?: boolean; // Defaults to false
+          resolved_at?: string | null;
+          resolved_by?: string | null;
+          resolution_notes?: string | null;
+        };
+        Update: {
+          campaign_id?: string;
+          reason?: 'suspicious_activity' | 'inappropriate_content' | 'false_information' | 'harmful_behavior' | 'privacy_violation' | 'other';
+          details?: string | null;
+          reported_by?: string;
+          resolved?: boolean;
+          resolved_at?: string | null;
+          resolved_by?: string | null;
+          resolution_notes?: string | null;
+          // Note: updated_at is handled automatically by the trigger
+        };
+      };
       
       // ... other tables
     };

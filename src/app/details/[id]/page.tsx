@@ -37,7 +37,7 @@ export default async function Details({ params }: { params: { id: string } }) {
                 timestamp: "2022"
             }]} />
 
-            <ContactReport />
+            <ContactReport campaignDetails={campaignDetails}/>
             <Footer />
 
         </div>
