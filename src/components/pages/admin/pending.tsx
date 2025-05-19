@@ -1,3 +1,5 @@
+'use client'
+
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { LayoutIcon, Eye, CheckCircle, XCircle } from "lucide-react";
@@ -11,9 +13,10 @@ import { NextPage } from "next";
 import { approveCampaign, contract, rejectCampaign } from "@/util/helper";
 import { useLoading } from "@/context/LoadingContext";
 import { defineChain, getContract, prepareContractCall, readContract, sendTransaction } from "thirdweb";
-import { useContractEvents, useReadContract, useSendTransaction } from "thirdweb/react";
+import { useActiveAccount, useContractEvents, useReadContract, useSendTransaction } from "thirdweb/react";
 import { client } from "@/app/client";
 import { CRESTFUNDING_CONTRACT } from "@/app/constants/contracts";
+import { useToast } from "@/hooks/use-toast";
 
 
 type Campaign = Database["public"]["Tables"]["campaigns"]["Row"];
@@ -34,13 +37,15 @@ export const PendingRequests: NextPage<CampaignsPageProps> = ({
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isRejectionModalOpen, setIsRejectionModalOpen] = useState<boolean>(false);
   const { showLoader, hideLoader } = useLoading();
+  const currentAccount = useActiveAccount();
+  const {toast} = useToast();
 
 
-  const {data : allcampaignId} =  useReadContract({
-  contract:contract,
-  method:
-    "function getAllCampaignIds() view returns (string[])",
-  params: [],
+  const { data: allcampaignId } = useReadContract({
+    contract: contract,
+    method:
+      "function getAllCampaignIds() view returns (string[])",
+    params: [],
   });
 
   console.log(allcampaignId)
@@ -75,10 +80,26 @@ export const PendingRequests: NextPage<CampaignsPageProps> = ({
   const handleApproveCampaign = async () => {
     if (!selectedCampaign) return;
     try {
-      showLoader("Approving campaign...");
+     
 
       //Blockchain part 
+      if (!currentAccount) {
+        throw new Error("No wallet connected");
 
+      }
+      console.log("Current acount :",currentAccount)
+       showLoader("Approving campaign...");
+      const transaction = await prepareContractCall({
+        contract: contract,
+        method:
+          "function createCampaign(string _id, address _creator, uint256 _goal, uint256 _durationInDays)",
+        params: [selectedCampaign.id, selectedCampaign.wallet_id, BigInt(selectedCampaign.goal), BigInt(30)],
+      });
+      const { transactionHash } = await sendTransaction({
+        transaction,
+        account: currentAccount,
+      });
+      console.log(transactionHash);
 
       await approveCampaign(selectedCampaign.id);
 
@@ -86,6 +107,9 @@ export const PendingRequests: NextPage<CampaignsPageProps> = ({
       await refreshCampaigns();
     }
     catch (error) {
+      toast({
+        title: error instanceof Error ? error.message : String(error),
+      });
       console.error("Approval error:", error);
     } finally {
       hideLoader();
