@@ -156,3 +156,24 @@ export const reportCampaign = async ( formData: reportInsert) => {
     return { success: true };
 
 }
+
+export const contactForm = async (FormData: { name: string; phone: string; email: string; message: string }) => {
+
+    const { data, error } = await supabase
+      .from('contact_submissions')
+    .insert({
+        name: FormData.name,
+        phone: FormData.phone,
+        email: FormData.email,
+        message: FormData.message
+      })
+      .order('created_at', { ascending: false }); // Optional: recent first
+  
+    if (error) {
+      console.error('Error fetching contact submissions:', error);
+    }
+    return { success: true };
+
+  }
+
+
