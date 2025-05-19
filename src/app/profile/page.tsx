@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useToast } from "@/hooks/use-toast"
 import ProtectedRoute from "@/components/protectedRoute"
-import { Camera, LogOut, Trash2, User, Mail, Lock, Clock, DollarSign, ChevronRight } from "lucide-react"
+import { Camera, LogOut, Trash2, User, Mail, Lock, Clock, DollarSign, ChevronRight, ArrowDownCircle } from "lucide-react"
 import type React from "react"
 import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
@@ -188,67 +188,75 @@ export default function ProfilePage() {
 
         {/* MODIFIED YOUR CAMPAIGNS SECTION */}
         <Card className="w-full max-w-3xl mx-auto mt-8 shadow-lg">
-          <div className="p-6">
-            <h2 className="text-xl font-semibold text-gray-800 mb-6">Your Campaigns</h2>
-            
-            <div className="space-y-4">
-              {campaigns.map((campaign, index) => (
-                <div key={index} className="group bg-white rounded-lg overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-all">
-                  <div className="flex flex-col sm:flex-row">
-                    <div className="sm:w-1/4 h-32 sm:h-auto overflow-hidden">
-                      <img 
-                        src={campaign.image} 
-                        alt={campaign.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                    </div>
-                    <div className="p-4 sm:p-5 sm:w-3/4 flex flex-col justify-between">
-                      <div>
-                        <h3 className="font-medium text-gray-900 mb-1">{campaign.title}</h3>
-                        <div className="flex items-center mb-3">
-                          <Clock className="h-3.5 w-3.5 text-gray-400 mr-1" />
-                          <span className="text-xs text-gray-500">Ends {new Date(campaign.endDate).toLocaleDateString()}</span>
-                        </div>
-                      </div>
-                      
-                      <div className="mt-2">
-                        <div className="flex justify-between text-sm mb-1">
-                          <div className="flex items-center">
-                            <DollarSign className="h-3.5 w-3.5 text-gray-400 mr-1" />
-                            <span className="text-gray-600">${campaign.collectedAmount.toLocaleString()}</span>
-                            <span className="text-gray-400 mx-1">of</span>
-                            <span className="text-gray-600">${campaign.requiredAmount.toLocaleString()}</span>
-                          </div>
-                          <span className="font-medium text-gray-700">{campaign.progress}%</span>
-                        </div>
-                        
-                        <div className="relative w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                          <div 
-                            className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-400 to-purple-400 rounded-full"
-                            style={{ width: `${campaign.progress}%` }}
-                          ></div>
-                        </div>
-                      </div>
-                      
-                      <div className="flex justify-end mt-3">
-                        <Button variant="ghost" size="sm" className="text-xs text-gray-500 hover:text-gray-700 p-0 h-6">
-                          View details
-                          <ChevronRight className="ml-1 h-3 w-3" />
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
+  <div className="p-6">
+    <h2 className="text-xl font-semibold text-gray-800 mb-6">Your Campaigns</h2>
+    
+    <div className="space-y-4">
+      {campaigns.map((campaign, index) => (
+        <div key={index} className="group bg-white rounded-lg overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-all">
+          <div className="flex flex-col sm:flex-row">
+            <div className="sm:w-1/4 h-32 sm:h-auto overflow-hidden">
+              <img 
+                src={campaign.image} 
+                alt={campaign.title}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              />
             </div>
-            
-            <div className="mt-6 flex justify-center">
-              <Button variant="outline" className="text-sm">
-                <Link href='/campaign'>Create New Campaign</Link>
-              </Button>
+            <div className="p-4 sm:p-5 sm:w-3/4 flex flex-col justify-between">
+              <div>
+                <h3 className="font-medium text-gray-900 mb-1">{campaign.title}</h3>
+                <div className="flex items-center mb-3">
+                  <Clock className="h-3.5 w-3.5 text-gray-400 mr-1" />
+                  <span className="text-xs text-gray-500">Ends {new Date(campaign.endDate).toLocaleDateString()}</span>
+                </div>
+              </div>
+              
+              <div className="mt-2">
+                <div className="flex justify-between text-sm mb-1">
+                  <div className="flex items-center">
+                    <DollarSign className="h-3.5 w-3.5 text-gray-400 mr-1" />
+                    <span className="text-gray-600">${campaign.collectedAmount.toLocaleString()}</span>
+                    <span className="text-gray-400 mx-1">of</span>
+                    <span className="text-gray-600">${campaign.requiredAmount.toLocaleString()}</span>
+                  </div>
+                  <span className="font-medium text-gray-700">{campaign.progress}%</span>
+                </div>
+                
+                <div className="relative w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                  <div 
+                    className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-400 to-purple-400 rounded-full"
+                    style={{ width: `${campaign.progress}%` }}
+                  ></div>
+                </div>
+              </div>
+              
+              <div className="flex justify-end space-x-2 mt-3">
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="text-xs text-green-600 hover:text-green-800 hover:bg-green-50 p-0 h-6" 
+                >
+                  <ArrowDownCircle className="mr-1 h-3 w-3" />
+                  Withdraw
+                </Button>
+                <Button variant="ghost" size="sm" className="text-xs text-gray-500 hover:text-gray-700 p-0 h-6">
+                  View details
+                  <ChevronRight className="ml-1 h-3 w-3" />
+                </Button>
+              </div>
             </div>
           </div>
-        </Card>
+        </div>
+      ))}
+    </div>
+    
+    <div className="mt-6 flex justify-center">
+      <Button variant="outline" className="text-sm">
+        <Link href='/campaign'>Create New Campaign</Link>
+      </Button>
+    </div>
+  </div>
+</Card>
       </div>
       
       <Footer />

@@ -25,7 +25,7 @@ interface ContributeModalProps {
   isOpen: boolean;
   onClose: () => void;
   title: string;
-  id :string;
+  id: string;
 }
 
 const ContributeModal = ({
@@ -37,13 +37,13 @@ const ContributeModal = ({
   const [amount, setAmount] = useState<number | string>("");
   const [convertedAmount, setConvertedAmount] = useState<number | string>("");
 
-  // Mock conversion rates - in a real app, you would fetch these from an API
+  // Mock conversion rates for Ethereum - in a real app, you would fetch these from an API
   const conversionRates: Record<string, number> = {
-    usd: 2.5,
-    eur: 2.8,
-    gbp: 3.2,
-    jpy: 0.018,
-    inr: 0.03,
+    usd: 0.00042,  // Example: 1 USD = 0.00042 ETH
+    eur: 0.00046,  // Example: 1 EUR = 0.00046 ETH
+    gbp: 0.00054,  // Example: 1 GBP = 0.00054 ETH
+    jpy: 0.0000028, // Example: 1 JPY = 0.0000028 ETH
+    inr: 0.0000050, // Example: 1 INR = 0.0000050 ETH
   };
 
   // Currency symbols for display
@@ -78,7 +78,7 @@ const ContributeModal = ({
       currency,
       amount,
       convertedAmount,
-      cryptoCurrency: "Polygon MATIC",
+      cryptoCurrency: "Ethereum ETH",
     });
     onClose();
   };
@@ -158,15 +158,15 @@ const ContributeModal = ({
           <div className="bg-gray-800 p-3 rounded-md text-white">
             <div className="flex justify-between items-center mb-1">
               <Label htmlFor="converted" className="text-gray-200 text-xs">
-                You'll Pay in MATIC
+                You'll Pay in ETH
               </Label>
               <div className="flex items-center gap-1">
                 <div className="w-2 h-2 rounded-full bg-blue-400"></div>
-                <span className="text-xs text-gray-300">Polygon</span>
+                <span className="text-xs text-gray-300">Ethereum</span>
               </div>
             </div>
             <div className="text-base font-medium">
-              {convertedAmount ? `${convertedAmount} MATIC` : "0.000000 MATIC"}
+              {convertedAmount ? `${convertedAmount} ETH` : "0.000000 ETH"}
             </div>
           </div>
         </div>
