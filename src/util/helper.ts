@@ -1,6 +1,8 @@
 import { Database } from "@/types/supabse";
 import { supabase } from "./supabse";
 
+
+
 type reportInsert = Database["public"]["Tables"]["reports"]["Insert"];
 
 // Function to get the public URL of an image stored in Supabase storage
@@ -12,6 +14,7 @@ export const getPublicUrl = (path: string) => {
 
 // Function to approve campaigns 
 export const approveCampaign = async (campaignId: string) => {
+    
     // Start a transaction to ensure data consistency
     const { data, error } = await supabase.rpc('approve_campaign_transaction', {
         p_campaign_id: campaignId

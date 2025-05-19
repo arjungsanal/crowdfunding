@@ -10,6 +10,9 @@ import { Database } from "@/types/supabse";
 import { NextPage } from "next";
 import { approveCampaign, rejectCampaign } from "@/util/helper";
 import { useLoading } from "@/context/LoadingContext";
+import { prepareContractCall, sendTransaction } from "thirdweb";
+import { useContractEvents, useSendTransaction } from "thirdweb/react";
+import { contract } from "@/app/page";
 
 type Campaign = Database["public"]["Tables"]["campaigns"]["Row"];
 
@@ -60,6 +63,10 @@ export const PendingRequests: NextPage<CampaignsPageProps> = ({
     if (!selectedCampaign) return;
     try {
       showLoader("Approving campaign...");
+
+      //Blockchain part 
+
+
       await approveCampaign(selectedCampaign.id);
       
       // After successful approval, refresh the campaigns data
