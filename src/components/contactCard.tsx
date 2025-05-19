@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, ChangeEvent, FormEvent } from 'react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -7,11 +7,22 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle } from '@/components/ui/dialog';
 import { Mail, Phone, User, MessageSquare, ArrowRight, MapPin, Facebook, Twitter, Instagram } from 'lucide-react';
+import { supabase } from '@/util/supabse';
+import { contactForm } from '@/util/helper';
+
+interface FormData {
+  name: string;
+  phone: string;
+  email: string;
+  message: string;
+}
 
 const ContactForm = () => {
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
-  const [formData, setFormData] = useState({
+  const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [isMounted, setIsMounted] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
+  const [formData, setFormData] = useState<FormData>({
     name: '',
     phone: '',
     email: '',
@@ -23,13 +34,32 @@ const ContactForm = () => {
     return () => setIsMounted(false);
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsSubmitted(true);
+    setIsSubmitting(true);
+    setError('');
+    
+    try {
+      const response = await contactForm(formData);
+      console.log('Response:', response);
+      // Reset form and show success dialog
+      setFormData({
+        name: '',
+        phone: '',
+        email: '',
+        message: '',
+      });
+      setIsSubmitted(true);
+    } catch (err) {
+      console.error('Error submitting form:', err);
+      setError('An error occurred while submitting your message. Please try again later.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -153,12 +183,19 @@ const ContactForm = () => {
                 </div>
               </div>
 
+              {error && (
+                <div className="text-red-500 text-sm py-2">
+                  {error}
+                </div>
+              )}
+
               <Button 
                 type="submit" 
                 className="w-full h-12 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium rounded-lg transition-all duration-200 transform hover:scale-[1.02] flex items-center justify-center gap-2"
+                disabled={isSubmitting}
               >
-                Submit Message
-                <ArrowRight className="h-5 w-5" />
+                {isSubmitting ? 'Submitting...' : 'Submit Message'}
+                {!isSubmitting && <ArrowRight className="h-5 w-5" />}
               </Button>
             </form>
           </CardContent>
@@ -259,8 +296,9 @@ const ContactForm = () => {
                     ></path>
                   </svg>
                 </div>
-                <h3 className="text-lg font-semibold">Thank You!</h3>
+                
               </DialogTitle>
+              <h2 className="text-lg text-center font-semibold">Thank You!</h2>
               <p className="text-center text-gray-500">
                 Thank you for reaching out to us. We will get back to you soon.
               </p>
