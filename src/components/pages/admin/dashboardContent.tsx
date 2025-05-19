@@ -2,18 +2,30 @@
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card";
 import {BarChart3, CheckCircle, Layout} from "lucide-react";
 import {Badge} from "@/components/ui/badge";
-import {getTotalAmountRaised} from "@/util/helper";
+import {fetchActiveCampaignsCount, fetchApprovedCampaigns, fetchPendingCampaign, getTotalAmountRaised} from "@/util/helper";
 import {useEffect, useState} from "react";
 
 // Dashboard content components
 export const DashboardContent= () => {
   const [totalFundCollected, setTotalFundCollected] = useState<number>(0)
+  const [activeCampaigns, setActiveCampaigns] = useState<number>(0)
+  const [pendingCampaigns, setPendingCampaigns] = useState<number>(0)
   const getTotalFunds = async ()=>{
     const totalAmount = await getTotalAmountRaised();
     setTotalFundCollected(totalAmount);
   }
+  const getActiveCampaigns = async ()=>{
+    const activeCampaigns = await fetchActiveCampaignsCount();
+    setActiveCampaigns(activeCampaigns);
+  }
+  const getPendingCampaigns = async ()=>{
+    const pendingCampaigns = await fetchPendingCampaign();
+    setPendingCampaigns(pendingCampaigns ?? 0);
+  }
   useEffect(() => {
-    getTotalFunds()
+    getTotalFunds();
+    getActiveCampaigns();
+    getPendingCampaigns();
   }, []);
  
   return(
@@ -31,9 +43,9 @@ export const DashboardContent= () => {
           <CardContent>
             <p className="text-3xl font-bold text-blue-600">₹{totalFundCollected}</p>
           </CardContent>
-          <CardFooter className="text-xs text-gray-500">
+          {/* <CardFooter className="text-xs text-gray-500">
             Updated today at 9:40 AM
-          </CardFooter>
+          </CardFooter> */}
         </Card>
         <Card className="border-0 shadow-sm hover:shadow-md transition-shadow">
           <CardHeader className="pb-2">
@@ -44,11 +56,11 @@ export const DashboardContent= () => {
             <CardDescription>Currently running</CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold text-green-600">48</p>
+            <p className="text-3xl font-bold text-green-600">{activeCampaigns}</p>
           </CardContent>
-          <CardFooter className="text-xs text-gray-500">
+          {/* <CardFooter className="text-xs text-gray-500">
             Updated today at 9:40 AM
-          </CardFooter>
+          </CardFooter> */}
         </Card>
         <Card className="border-0 shadow-sm hover:shadow-md transition-shadow">
           <CardHeader className="pb-2">
@@ -59,11 +71,11 @@ export const DashboardContent= () => {
             <CardDescription>Campaign pending rate</CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold text-yellow-500">7</p>
+            <p className="text-3xl font-bold text-yellow-500">{pendingCampaigns}</p>
           </CardContent>
-          <CardFooter className="text-xs text-gray-500">
+          {/* <CardFooter className="text-xs text-gray-500">
             Updated today at 9:40 AM
-          </CardFooter>
+          </CardFooter> */}
         </Card>
       </div>
       

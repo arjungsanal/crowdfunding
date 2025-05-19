@@ -176,4 +176,26 @@ export const contactForm = async (FormData: { name: string; phone: string; email
 
   }
 
+  export const fetchActiveCampaignsCount = async () => {
+    const { data, error } = await supabase
+        .from('approved_campaigns')
+        .select('*', { count: 'exact' })
+        .eq('withdrawal_status', 'pending');
+        
+    if (error) {
+        console.error('Error fetching active campaigns count:', error);
+        return 0;
+    }
 
+    return data.length;
+
+}
+
+ export const fetchPendingCampaign = async () => {
+    const { data, error } = await supabase.from('campaigns').select('*');
+    if (error) {
+      console.error('Error fetching campaigns:', error);
+    } else {
+        return data? (data.filter(c => c.approval_status === 'pending').length) : 0;
+    }
+  };
