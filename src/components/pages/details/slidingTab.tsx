@@ -156,11 +156,6 @@ const SlidingTabsComponent = ({ campaignData }: SlidingTabsComponentProps) => {
           </div>
         </div>
       </div>
-      <ContributeModal 
-        isOpen={isModalOpen} 
-        onClose={closeModal} 
-        title={campaignData.title}
-      />
     </div>
   );
 };
