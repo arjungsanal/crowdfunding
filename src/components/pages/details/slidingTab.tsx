@@ -6,6 +6,7 @@ import { ArrowRight, ArrowLeft, Share, HeartHandshake } from "lucide-react";
 import { Database } from "@/types/supabse";
 import { getPublicUrl } from "@/util/helper";
 import { useToast } from "@/hooks/use-toast";
+import ContributeModal from "./contributeModel";
 
 type campaign = Database["public"]["Tables"]["campaigns"]["Row"];
 
@@ -20,7 +21,12 @@ interface SlidingTabsComponentProps {
 const SlidingTabsComponent = ({ campaignData }: SlidingTabsComponentProps) => {
   const [activeTab, setActiveTab] = useState(0);
   const [isExpanded, setIsExpanded] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
   const { toast } = useToast();
+
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
 
 
   const handleShare = async () => {
@@ -149,15 +155,26 @@ const SlidingTabsComponent = ({ campaignData }: SlidingTabsComponentProps) => {
               <Share className="h-4 w-4 sm:h-5 sm:w-5" />
               Share
             </Button>
-            <Button className="gap-2 justify-center px-24 bg-blue-800 hover:bg-blue-600">
+            <Button   onClick={openModal} className="gap-2 justify-center px-24 bg-blue-800 hover:bg-blue-600">
               <HeartHandshake className="h-4 w-4 sm:h-5 sm:w-5" />
               Contribute
             </Button>
           </div>
         </div>
       </div>
+
+           <ContributeModal
+              isOpen={isModalOpen}
+              onClose={closeModal}
+              title={campaignData.title}
+              id={campaignData.id}
+            />
     </div>
+
+    
   );
+
+
 };
 
 export default SlidingTabsComponent;

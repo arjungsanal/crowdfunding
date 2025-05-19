@@ -102,7 +102,7 @@ export const fetchCampaignDetails = async (campagnId: string) => {
         .single();
 
     if (error) {
-        console.error('Error fetching campaign details:', error);
+        console.log('Error fetching campaign details:', error);
         return null;
     }
 

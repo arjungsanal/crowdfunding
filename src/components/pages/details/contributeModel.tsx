@@ -1,3 +1,4 @@
+"use client"
 // ContributeModal.tsx
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
@@ -20,6 +21,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { ExternalLink, Wallet } from "lucide-react";
+import { ConnectButton, lightTheme, useActiveAccount } from "thirdweb/react";
+import { client } from "@/app/client";
+import { useToast } from "@/hooks/use-toast";
+import { prepareContractCall, sendTransaction } from "thirdweb";
+import { contract } from "@/util/helper";
 
 interface ContributeModalProps {
   isOpen: boolean;
@@ -30,12 +36,15 @@ interface ContributeModalProps {
 
 const ContributeModal = ({
   isOpen,
+  id,
   onClose,
   title,
 }: ContributeModalProps) => {
   const [currency, setCurrency] = useState<string>("inr");
   const [amount, setAmount] = useState<number | string>("");
-  const [convertedAmount, setConvertedAmount] = useState<number | string>("");
+  const [convertedAmount, setConvertedAmount] = useState<number>(0);
+  const account = useActiveAccount();
+  const { toast } = useToast();
 
   // Mock conversion rates for Ethereum - in a real app, you would fetch these from an API
   const conversionRates: Record<string, number> = {
@@ -60,9 +69,9 @@ const ContributeModal = ({
     if (amount && !isNaN(Number(amount))) {
       const rate = conversionRates[currency] || 0;
       const converted = Number(amount) * rate;
-      setConvertedAmount(converted.toFixed(6));
+      setConvertedAmount(converted);
     } else {
-      setConvertedAmount("");
+      setConvertedAmount(0);
     }
   }, [amount, currency]);
 
@@ -73,15 +82,56 @@ const ContributeModal = ({
     }
   };
 
-  const handleProceed = () => {
-    console.log({
+  const handleProceed = async() => {
+    if (!account) {
+      console.log({
       currency,
       amount,
       convertedAmount,
       cryptoCurrency: "Ethereum ETH",
     });
+      onClose();
+      toast({
+        title: "Payment failed connect crypto wallet",
+        variant: "destructive",
+      })
+      return
+    }
+
+  try{
+    const transaction = await prepareContractCall({
+      contract:contract,
+      method: "function donate(string _id) payable",
+      value: BigInt(Math.round(convertedAmount * 1e18)), 
+      params: [id],
+    });
+    const { transactionHash } = await sendTransaction({
+      transaction,
+      account,
+    });
+
+    toast({
+      title: 'Donation completed',
+      description:'Thank you for your contribution' 
+    })
+    }
+    catch(error){
+      toast({
+      title: String(error),
+      variant: "destructive",
+      }
+      )
+    }
+
+    console.log({
+      currency,
+      amount,
+      convertedAmount: "Converted",
+      cryptoCurrency: "Ethereum ETH",
+    });
     onClose();
   };
+
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -90,19 +140,19 @@ const ContributeModal = ({
         <div className="p-4 border-b border-gray-200 bg-gray-900 text-white">
           <DialogHeader>
             <DialogTitle className="text-center text-lg font-medium">
-              Contribute To 
+              Contribute To
               <span className="text-blue-400"> {title}</span>
             </DialogTitle>
           </DialogHeader>
         </div>
-        
+
         <div className="p-4 space-y-4 bg-gray-50">
           {/* Compact wallet info */}
           <div className="bg-white p-3 rounded-md flex items-center gap-2 text-xs border border-gray-200">
             <Wallet className="h-4 w-4 text-blue-500 flex-shrink-0" />
             <p className="text-gray-700">Don't have a wallet?</p>
-            <Link 
-              href="https://metamask.io/" 
+            <Link
+              href="https://metamask.io/"
               target="_blank"
               className="text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1"
             >
@@ -169,9 +219,22 @@ const ContributeModal = ({
               {convertedAmount ? `${convertedAmount} ETH` : "0.000000 ETH"}
             </div>
           </div>
+          <div>
+            <ConnectButton
+              connectButton={{
+                label: "Connect you crypto wallet "
+              }}
+              client={client}
+              theme={lightTheme()}
+
+            />
+          </div>
+
         </div>
 
         <DialogFooter className="p-4 bg-gray-50 border-t border-gray-200">
+
+
           <Button
             onClick={handleProceed}
             className="w-full h-10 bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm rounded-md transition-colors duration-200"
@@ -179,6 +242,7 @@ const ContributeModal = ({
           >
             Proceed to Payment
           </Button>
+
         </DialogFooter>
       </DialogContent>
     </Dialog>

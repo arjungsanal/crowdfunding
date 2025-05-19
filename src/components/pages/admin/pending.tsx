@@ -7,15 +7,12 @@ import { useState } from "react";
 import CampaignDetailsModal from "./viewDetails";
 import { RejectionModal } from "./rejection";
 import { Badge } from "@/components/ui/badge";
-import { supabase } from "@/util/supabse";
 import { Database } from "@/types/supabse";
 import { NextPage } from "next";
 import { approveCampaign, contract, rejectCampaign } from "@/util/helper";
 import { useLoading } from "@/context/LoadingContext";
-import { defineChain, getContract, prepareContractCall, readContract, sendTransaction } from "thirdweb";
-import { useActiveAccount, useContractEvents, useReadContract, useSendTransaction } from "thirdweb/react";
-import { client } from "@/app/client";
-import { CRESTFUNDING_CONTRACT } from "@/app/constants/contracts";
+import { prepareContractCall, sendTransaction } from "thirdweb";
+import { useActiveAccount, useReadContract } from "thirdweb/react";
 import { useToast } from "@/hooks/use-toast";
 
 
