@@ -3,52 +3,62 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, ArrowLeft, Share, HeartHandshake } from "lucide-react";
-import ContributeModal from "./contributeModel";
+import { Database } from "@/types/supabse";
+import { getPublicUrl } from "@/util/helper";
+import { useToast } from "@/hooks/use-toast";
 
+type campaign = Database["public"]["Tables"]["campaigns"]["Row"];
 
 type Image = {
   url: string;
   alt: string;
 };
+interface SlidingTabsComponentProps {
+  campaignData: campaign;
+}
 
-const SlidingTabsComponent = () => {
-
-  const campaignData = {
-    title: "Help Save the Local Library",
-    description: "Our local library needs urgent renovation to continue serving our community. Your contribution will help maintain this vital educational resource for future generations.",
-    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQssRRU1sV63S1QIXZl1z38Xj2olXz5P_2Hwg&s",
-    amountCollected: 15000,
-    totalAmount: 25000,
-    daysLeft: 15
-  };
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  
-    const openModal = () => setIsModalOpen(true);
-    const closeModal = () => setIsModalOpen(false);
-
+const SlidingTabsComponent = ({ campaignData }: SlidingTabsComponentProps) => {
   const [activeTab, setActiveTab] = useState(0);
   const [isExpanded, setIsExpanded] = useState(false);
+  const { toast } = useToast();
 
-  const uploadedImages: Image[] = [
-    {
-      url: "https://images.pexels.com/photos/104827/cat-pet-animal-domestic-104827.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-      alt: "Cat pet animal"
-    },
-    {
-      url: "https://images.pexels.com/photos/1056251/pexels-photo-1056251.jpeg?auto=compress&cs=tinysrgb&w=600",
-      alt: "Second pet"
-    },
-    {
-      url: "https://images.pexels.com/photos/2194261/pexels-photo-2194261.jpeg?auto=compress&cs=tinysrgb&w=600",
-      alt: "Third pet"
+
+  const handleShare = async () => {
+    // Create the share data
+    const shareData = {
+      title: campaignData.title,
+      text: `Support ${campaignData.title} - ${campaignData.story?.substring(0, 100)}...`,
+      url: window.location.href,
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+        console.log('Shared successfully');
+      } else {
+        await navigator.clipboard.writeText(window.location.href);
+        toast({
+          title: "Link copied!",
+          description: "Campaign link copied to clipboard.",
+          duration: 3000,
+        });
+      }
+    } catch (error) {
+      console.error('Error sharing:', error);
+      toast({
+        title: "Sharing failed",
+        description: "Failed to share campaign. Please try again.",
+        variant: "destructive",
+        duration: 4000,
+      });
     }
-  ];
-
+  };
+  const uploadedImages: Image[] = campaignData.proof_image_urls.map(url => ({
+    url: getPublicUrl(url),
+    alt: "Campaign proof image"
+  }));
   const [selectedImage, setSelectedImage] = useState<Image>(uploadedImages[0]);
 
-  const description = `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Magni porro voluptates officiis perferendis. Asperiores nobis recusandae ratione, reiciendis quaerat fugit aperiam commodi at harum inventore vero, est veritatis illum in dignissimos id voluptas quidem ut maiores perspiciatis. Odit accusamus, quae nihil harum velit obcaecati sit ab asperiores modi quo voluptas molestiae, eius, magnam exercitationem doloremque atque temporibus praesentium a pariatur laborum vitae excepturi? Quas cupiditate reiciendis iusto quibusdam, commodi nostrum, dicta placeat quos quia recusandae dignissimos, pariatur maxime animi ipsam porro non vitae provident nisi magnam? Culpa aliquid provident rem ut fugit deserunt excepturi.`;
-
-  const fullDescription = `${description} Aliquid culpa aperiam nulla fuga sint id provident ipsum nesciunt temporibus possimus, quibusdam vel libero consequatur explicabo debitis modi ducimus mollitia eos! Esse deserunt accusamus vero illo aliquid nobis iusto ab aperiam quidem culpa, aspernatur rerum nesciunt sequi repellat adipisci dolorem! Accusamus, debitis delectus. Error unde nihil cupiditate, culpa atque saepe distinctio adipisci inventore placeat. Quos at optio perspiciatis voluptatibus quo quidem quasi cum magnam dignissimos dolor ad suscipit, hic aperiam quaerat, sapiente vero maiores dolore officiis aut reprehenderit.`;
 
   const handleNextTab = () => {
     setActiveTab((prev) => (prev + 1) % 2);
@@ -69,17 +79,17 @@ const SlidingTabsComponent = () => {
           >
             {/* Tab 1 - Description */}
             <div className="min-w-full">
-              <h2 className="text-lg sm:text-xl font-bold mb-3">Save the Local Library</h2>
+              <h2 className="text-lg sm:text-xl font-bold mb-3">{campaignData.title}</h2>
               <div className="prose max-w-none">
-                <p className="text-gray-600 text-sm sm:text-base max-h-[280px] overflow-y-auto">
-                  {isExpanded ? fullDescription : description}
-                  <button
-                    onClick={() => setIsExpanded(!isExpanded)}
-                    className="text-blue-600 hover:text-blue-800 ml-2 font-medium"
-                  >
-                    {isExpanded ? "Read Less" : "Read More"}
-                  </button>
-                </p>
+                <div className={`text-gray-600 text-sm sm:text-base ${isExpanded ? '' : 'max-h-[280px]'} overflow-hidden transition-all duration-300`}>
+                  {campaignData.story}
+                </div>
+                <button
+                  onClick={() => setIsExpanded(!isExpanded)}
+                  className="text-blue-600 hover:text-blue-800 mt-2 font-medium focus:outline-none"
+                >
+                  {isExpanded ? "Read Less" : "Read More"}
+                </button>
               </div>
             </div>
 
@@ -105,11 +115,10 @@ const SlidingTabsComponent = () => {
                     <img
                       src={image.url}
                       alt={image.alt}
-                      className={`w-12 h-12 sm:w-14 sm:h-14 object-cover rounded-lg border-2 transition-all ${
-                        selectedImage.url === image.url 
-                          ? 'border-blue-500' 
+                      className={`w-12 h-12 sm:w-14 sm:h-14 object-cover rounded-lg border-2 transition-all ${selectedImage.url === image.url
+                          ? 'border-blue-500'
                           : 'border-gray-200 hover:border-blue-300'
-                      }`}
+                        }`}
                     />
                   </button>
                 ))}
@@ -136,12 +145,11 @@ const SlidingTabsComponent = () => {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-2 justify-center">
-            <Button className=" gap-2 justify-center px-24 ">
+            <Button className="gap-2 justify-center px-24" onClick={handleShare}>
               <Share className="h-4 w-4 sm:h-5 sm:w-5" />
               Share
             </Button>
-            <Button className=" gap-2 justify-center px-24  bg-blue-800 hover:bg-blue-600"
-              onClick={openModal}>
+            <Button className="gap-2 justify-center px-24 bg-blue-800 hover:bg-blue-600">
               <HeartHandshake className="h-4 w-4 sm:h-5 sm:w-5" />
               Contribute
             </Button>

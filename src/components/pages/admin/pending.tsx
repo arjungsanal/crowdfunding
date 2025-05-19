@@ -1,26 +1,37 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { LayoutIcon, Eye, CheckCircle, XCircle } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import CampaignDetailsModal from "./viewDetails";
 import { RejectionModal } from "./rejection";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/util/supabse";
 import { Database } from "@/types/supabse";
 import { NextPage } from "next";
+import { approveCampaign, rejectCampaign } from "@/util/helper";
+import { useLoading } from "@/context/LoadingContext";
+import { prepareContractCall, sendTransaction } from "thirdweb";
+import { useContractEvents, useSendTransaction } from "thirdweb/react";
+import { contract } from "@/app/page";
 
 type Campaign = Database["public"]["Tables"]["campaigns"]["Row"];
 
 interface CampaignsPageProps {
   campaigns: Campaign[];
   error?: string;
+  refreshCampaigns: () => Promise<void>; // Add this prop
 }
 
-export const PendingRequests: NextPage<CampaignsPageProps> = ({ campaigns, error }) => {
+export const PendingRequests: NextPage<CampaignsPageProps> = ({ 
+  campaigns, 
+  error, 
+  refreshCampaigns 
+}) => {
   // Modal state
   const [selectedCampaign, setSelectedCampaign] = useState<Campaign | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isRejectionModalOpen, setIsRejectionModalOpen] = useState<boolean>(false);
+  const { showLoader, hideLoader } = useLoading();
 
   if (error) {
     return <div className="error-container">Error loading campaigns: {error}</div>;
@@ -47,37 +58,43 @@ export const PendingRequests: NextPage<CampaignsPageProps> = ({ campaigns, error
     setIsRejectionModalOpen(false);
   };
 
-  // Approve campaign function (you can add Supabase logic here)
+  // Approve campaign function
   const handleApproveCampaign = async () => {
     if (!selectedCampaign) return;
-    
-    const { error } = await supabase
-      .from("campaigns")
-      .update({ status: "approved" })
-      .eq("id", selectedCampaign.id);
+    try {
+      showLoader("Approving campaign...");
 
-    if (error) {
+      //Blockchain part 
+
+
+      await approveCampaign(selectedCampaign.id);
+      
+      // After successful approval, refresh the campaigns data
+      await refreshCampaigns();
+    }
+    catch (error) {
       console.error("Approval error:", error);
-    } else {
-      console.log("Campaign approved:", selectedCampaign.id);
+    } finally {
+      hideLoader();
       handleCloseModal();
     }
   };
 
-  // Reject campaign function (you can add Supabase logic here)
+  // Reject campaign function
   const handleRejectCampaign = async (reason: string) => {
     if (!selectedCampaign) return;
-
-    const { error } = await supabase
-      .from("campaigns")
-      .update({ status: "rejected", rejection_reason: reason })
-      .eq("id", selectedCampaign.id);
-
-    if (error) {
-      console.error("Rejection error:", error);
-    } else {
-      console.log("Campaign rejected:", selectedCampaign.id);
-      handleCloseRejectionModal();
+    try {
+      showLoader("Rejecting campaign...");
+      await rejectCampaign(selectedCampaign.id,reason);
+      
+      // After successful approval, refresh the campaigns data
+      await refreshCampaigns();
+    }
+    catch (error) {
+      console.error("Approval error:", error);
+    } finally {
+      hideLoader();
+      handleCloseModal();
     }
   };
 
@@ -96,54 +113,60 @@ export const PendingRequests: NextPage<CampaignsPageProps> = ({ campaigns, error
       <h2 className="text-2xl font-bold mb-6">Pending Approval Requests</h2>
       <Card className="border-0 shadow-sm overflow-hidden">
         <div className="divide-y">
-          {campaigns.map((campaign) => (
-            <div key={campaign.id} className="p-4 hover:bg-gray-50 transition-colors">
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <div className="flex items-center">
-                  <div className="h-10 w-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 mr-3">
-                    <LayoutIcon className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <div className="flex items-center">
-                      <h4 className="font-semibold">Campaign #{campaign.title}</h4>
-                      <Badge variant="outline" className="ml-2 text-amber-600 bg-amber-50">Pending</Badge>
+          {campaigns.length === 0 ? (
+            <div className="p-8 text-center text-gray-500">
+              No pending campaigns found.
+            </div>
+          ) : (
+            campaigns.map((campaign) => (
+              <div key={campaign.id} className="p-4 hover:bg-gray-50 transition-colors">
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                  <div className="flex items-center">
+                    <div className="h-10 w-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 mr-3">
+                      <LayoutIcon className="h-5 w-5" />
                     </div>
-                    <p className="text-sm text-gray-500">Requested: {campaign.created_at} days ago</p>
-                    <p className="text-sm text-gray-600 mt-1">Fundraising goal: ${campaign.goal.toLocaleString()}</p>
+                    <div>
+                      <div className="flex items-center">
+                        <h4 className="font-semibold">Campaign #{campaign.title}</h4>
+                        <Badge variant="outline" className="ml-2 text-amber-600 bg-amber-50">Pending</Badge>
+                      </div>
+                      <p className="text-sm text-gray-500">Requested: {campaign.created_at} days ago</p>
+                      <p className="text-sm text-gray-600 mt-1">Fundraising goal: ${campaign.goal.toLocaleString()}</p>
+                    </div>
                   </div>
-                </div>
-                <div className="flex space-x-2 ml-auto">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="border-blue-500 text-blue-600 hover:bg-blue-50"
-                    onClick={() => handleOpenModal(campaign)}
-                  >
-                    <Eye className="mr-1 h-4 w-4" />
-                    View Details
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="border-green-500 text-green-600 hover:bg-green-50"
-                    onClick={() => handleApproveCampaignClick(campaign)}
-                  >
-                    <CheckCircle className="mr-1 h-4 w-4" />
-                    Approve
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="border-red-500 text-red-600 hover:bg-red-50"
-                    onClick={() => handleRejectCampaignClick(campaign)}
-                  >
-                    <XCircle className="mr-1 h-4 w-4" />
-                    Reject
-                  </Button>
+                  <div className="flex space-x-2 ml-auto">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="border-blue-500 text-blue-600 hover:bg-blue-50"
+                      onClick={() => handleOpenModal(campaign)}
+                    >
+                      <Eye className="mr-1 h-4 w-4" />
+                      View Details
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="border-green-500 text-green-600 hover:bg-green-50"
+                      onClick={() => handleApproveCampaignClick(campaign)}
+                    >
+                      <CheckCircle className="mr-1 h-4 w-4" />
+                      Approve
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="border-red-500 text-red-600 hover:bg-red-50"
+                      onClick={() => handleRejectCampaignClick(campaign)}
+                    >
+                      <XCircle className="mr-1 h-4 w-4" />
+                      Reject
+                    </Button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </Card>
 

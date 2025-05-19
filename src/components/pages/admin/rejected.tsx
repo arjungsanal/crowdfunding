@@ -12,6 +12,7 @@ type Campaign = Database["public"]["Tables"]["campaigns"]["Row"];
 interface CampaignsPageProps {
   campaigns: Campaign[];
   error?: string;
+  refreshCampaigns: () => Promise<void>; // Add this prop
 }
 
 export const RejectedRequests: NextPage<CampaignsPageProps> = ({ campaigns, error }) => {

@@ -1,20 +1,21 @@
 "use client";
 
-import React, { useState, useEffect, SVGProps, JSX } from 'react';
-import { LayoutIcon, BarChart3, CheckCircle, XCircle, LogOut } from 'lucide-react';
+import React, {JSX, SVGProps, useEffect, useState} from 'react';
+import {BarChart3, CheckCircle, LayoutIcon, LogOut, XCircle} from 'lucide-react';
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { useRouter } from "next/navigation";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { supabase } from '@/util/supabse';
-import { DashboardContent } from './dashboardContent';
-import { LoginForm } from './login'; 
-import { PendingRequests } from './pending'; 
-import { RejectedRequests } from './rejected';
-import { ApprovedRequests } from './approved';
-import { Database } from '@/types/supabse';
+import {Button} from "@/components/ui/button";
+import {ScrollArea} from "@/components/ui/scroll-area";
+import {useRouter} from "next/navigation";
+import {Badge} from "@/components/ui/badge";
+import {Separator} from "@/components/ui/separator";
+import {supabase} from '@/util/supabse';
+import {DashboardContent} from './dashboardContent';
+import {LoginForm} from './login';
+import {PendingRequests} from './pending';
+import {RejectedRequests} from './rejected';
+import {ApprovedRequests} from './approved';
+import {Database} from '@/types/supabse';
+
 
 // Define types
 type Campaign = Database['public']['Tables']['campaigns']['Row'];
@@ -28,25 +29,27 @@ const AdminDashboard: React.FC = () => {
   const [rejectedCampaignsCount, setRejectedCampaignsCount] = useState<number>(0);
   const router = useRouter();
 
+  // Function to fetch campaigns and update state
+  const fetchCampaigns = async () => {
+    const { data, error } = await supabase.from('campaigns').select('*');
+    if (error) {
+      console.error('Error fetching campaigns:', error);
+    } else {
+      setCampaigns(data);
+      setPendingCampaignsCount(data.filter(c => c.approval_status === 'pending').length);
+      setApprovedCampaignsCount(data.filter(c => c.approval_status === 'approved').length);
+      setRejectedCampaignsCount(data.filter(c => c.approval_status === 'rejected').length);
+    }
+  };
+
   useEffect(() => {
     // Check authentication status
     const authStatus = localStorage.getItem('isAdminAuthenticated');
     setIsAuthenticated(authStatus === 'true');
 
-    // Fetch campaigns
-    const fetchCampaigns = async () => {
-      const { data, error } = await supabase.from('campaigns').select('*');
-      if (error) {
-        console.error('Error fetching campaigns:', error);
-      } else {
-        setCampaigns(data);
-        setPendingCampaignsCount(data.filter(c => c.approval_status === 'pending').length);
-        setApprovedCampaignsCount(data.filter(c => c.approval_status === 'approved').length);
-        setRejectedCampaignsCount(data.filter(c => c.approval_status === 'rejected').length);
-      }
-    };
-
+    // Fetch campaigns on initial load
     fetchCampaigns();
+    
   }, []);
 
   const handleLogin = () => {
@@ -63,13 +66,28 @@ const AdminDashboard: React.FC = () => {
   const renderContent = () => {
     switch (activeView) {
       case 'dashboard':
-        return <DashboardContent  />; 
+        return <DashboardContent />;
       case 'pending':
-        return <PendingRequests campaigns={campaigns.filter(c => c.approval_status === 'pending')} />;
+        return (
+          <PendingRequests 
+            campaigns={campaigns.filter(c => c.approval_status === 'pending')} 
+            refreshCampaigns={fetchCampaigns}
+          />
+        );
       case 'approved':
-        return <ApprovedRequests campaigns={campaigns.filter(c => c.approval_status === 'approved')} />;
+        return (
+          <ApprovedRequests 
+            campaigns={campaigns.filter(c => c.approval_status === 'approved')} 
+            
+          />
+        );
       case 'rejected':
-        return <RejectedRequests campaigns={campaigns.filter(c => c.approval_status === 'rejected')} />;
+        return (
+          <RejectedRequests 
+            campaigns={campaigns.filter(c => c.approval_status === 'rejected')} 
+            refreshCampaigns={fetchCampaigns}
+          />
+        );
       default:
         return <DashboardContent />;
     }
