@@ -18,7 +18,7 @@ import { ThirdwebProvider } from "thirdweb/react";
 // // connect to your contract
 // export const contract = getContract({
 //   client,
-//   chain: defineChain(11155111),
+//   chain: ,defineChain(11155111)
 //   address: "0x1609112877e1B6675a74f56e1c5d474a59EC184d",
 // });
 

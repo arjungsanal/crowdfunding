@@ -8,10 +8,12 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/util/supabse";
 import { Database } from "@/types/supabse";
 import { NextPage } from "next";
-import { approveCampaign, rejectCampaign } from "@/util/helper";
+import { approveCampaign, contract, rejectCampaign } from "@/util/helper";
 import { useLoading } from "@/context/LoadingContext";
-import { prepareContractCall, sendTransaction } from "thirdweb";
-import { useContractEvents, useSendTransaction } from "thirdweb/react";
+import { defineChain, getContract, prepareContractCall, readContract, sendTransaction } from "thirdweb";
+import { useContractEvents, useReadContract, useSendTransaction } from "thirdweb/react";
+import { client } from "@/app/client";
+import { CRESTFUNDING_CONTRACT } from "@/app/constants/contracts";
 
 
 type Campaign = Database["public"]["Tables"]["campaigns"]["Row"];
@@ -22,16 +24,27 @@ interface CampaignsPageProps {
   refreshCampaigns: () => Promise<void>; // Add this prop
 }
 
-export const PendingRequests: NextPage<CampaignsPageProps> = ({ 
-  campaigns, 
-  error, 
-  refreshCampaigns 
+export const PendingRequests: NextPage<CampaignsPageProps> = ({
+  campaigns,
+  error,
+  refreshCampaigns
 }) => {
   // Modal state
   const [selectedCampaign, setSelectedCampaign] = useState<Campaign | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isRejectionModalOpen, setIsRejectionModalOpen] = useState<boolean>(false);
   const { showLoader, hideLoader } = useLoading();
+
+
+  const {data : allcampaignId} =  useReadContract({
+  contract:contract,
+  method:
+    "function getAllCampaignIds() view returns (string[])",
+  params: [],
+  });
+
+  console.log(allcampaignId)
+
 
   if (error) {
     return <div className="error-container">Error loading campaigns: {error}</div>;
@@ -68,7 +81,7 @@ export const PendingRequests: NextPage<CampaignsPageProps> = ({
 
 
       await approveCampaign(selectedCampaign.id);
-      
+
       // After successful approval, refresh the campaigns data
       await refreshCampaigns();
     }
@@ -85,8 +98,8 @@ export const PendingRequests: NextPage<CampaignsPageProps> = ({
     if (!selectedCampaign) return;
     try {
       showLoader("Rejecting campaign...");
-      await rejectCampaign(selectedCampaign.id,reason);
-      
+      await rejectCampaign(selectedCampaign.id, reason);
+
       // After successful approval, refresh the campaigns data
       await refreshCampaigns();
     }
@@ -107,6 +120,8 @@ export const PendingRequests: NextPage<CampaignsPageProps> = ({
     setSelectedCampaign(campaign);
     handleOpenRejectionModal();
   };
+
+
 
   return (
     <div>
@@ -186,7 +201,7 @@ export const PendingRequests: NextPage<CampaignsPageProps> = ({
         <RejectionModal
           isOpen={isRejectionModalOpen}
           onClose={handleCloseRejectionModal}
-          campaignId={selectedCampaign.id} 
+          campaignId={selectedCampaign.id}
           onReject={handleRejectCampaign}
         />
       )}

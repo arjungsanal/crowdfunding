@@ -15,6 +15,8 @@ import {PendingRequests} from './pending';
 import {RejectedRequests} from './rejected';
 import {ApprovedRequests} from './approved';
 import {Database} from '@/types/supabse';
+import { ConnectButton, lightTheme, useActiveAccount } from 'thirdweb/react';
+import { client } from '@/app/client';
 
 
 // Define types
@@ -27,6 +29,7 @@ const AdminDashboard: React.FC = () => {
   const [pendingCampaignsCount, setPendingCampaignsCount] = useState<number>(0);
   const [approvedCampaignsCount, setApprovedCampaignsCount] = useState<number>(0);
   const [rejectedCampaignsCount, setRejectedCampaignsCount] = useState<number>(0);
+  const account = useActiveAccount();
   const router = useRouter();
 
   // Function to fetch campaigns and update state
@@ -151,10 +154,19 @@ const AdminDashboard: React.FC = () => {
           </ScrollArea>
 
           <div className="p-4 border-t mt-auto">
-            <Button variant="outline" className="w-full justify-start text-red-600 hover:bg-red-50 hover:text-red-700" onClick={handleLogout}>
+            <Button variant="outline" className="w-full justify-start mb-3 text-red-600 hover:bg-red-50 hover:text-red-700" onClick={handleLogout}>
               <LogOut className="mr-2 h-4 w-4" />
               Log Out
             </Button>
+            <ConnectButton 
+            client={client}
+            theme={lightTheme()}
+            detailsButton={{
+              style:{
+                maxHeight:"50px",
+              }
+            }}
+            />
           </div>
         </div>
       </div>

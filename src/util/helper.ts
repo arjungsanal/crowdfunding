@@ -1,9 +1,19 @@
 import { Database } from "@/types/supabse";
 import { supabase } from "./supabse";
+import { defineChain, getContract } from "thirdweb";
+import { client } from "@/app/client";
+import { CRESTFUNDING_CONTRACT } from "@/app/constants/contracts";
 
 
 
 type reportInsert = Database["public"]["Tables"]["reports"]["Insert"];
+
+
+ export const contract = getContract({
+    client: client,
+    chain: defineChain(11155111),
+    address: CRESTFUNDING_CONTRACT,
+  });
 
 // Function to get the public URL of an image stored in Supabase storage
 export const getPublicUrl = (path: string) => {
