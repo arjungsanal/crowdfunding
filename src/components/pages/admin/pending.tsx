@@ -12,7 +12,7 @@ import { approveCampaign, rejectCampaign } from "@/util/helper";
 import { useLoading } from "@/context/LoadingContext";
 import { prepareContractCall, sendTransaction } from "thirdweb";
 import { useContractEvents, useSendTransaction } from "thirdweb/react";
-import { contract } from "@/app/page";
+
 
 type Campaign = Database["public"]["Tables"]["campaigns"]["Row"];
 
