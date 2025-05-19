@@ -3,6 +3,8 @@ import Navbar from "@/components/navbar"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Separator } from "@/components/ui/separator"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
 
 interface Purpose {
   title: string
@@ -144,12 +146,11 @@ export default function AboutPage() {
             <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
               Join a global community of changemakers. Your support, no matter the size, helps create a better future for everyone.
             </p>
-            <button className="mt-6 px-8 py-3 bg-black text-white font-semibold rounded-lg hover:bg-gray transition duration-300 transform hover:scale-105">
-              Start Making A Difference
-            </button>
+            <Button className="mt-6 px-8 py-3 bg-black text-white font-semibold rounded-lg hover:bg-gray transition duration-300 transform hover:scale-105">
+            <Link href="/listings">Start Making A Difference</Link>
+              
+            </Button>
           </div>
-          {/* Gradient overlay for a modern touch */}
-          <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-primary/50 to-transparent"></div>
         </section>
       </main>
 

@@ -3,6 +3,8 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, ArrowLeft, Share, HeartHandshake } from "lucide-react";
+import ContributeModal from "./contributeModel";
+
 
 type Image = {
   url: string;
@@ -10,6 +12,20 @@ type Image = {
 };
 
 const SlidingTabsComponent = () => {
+
+  const campaignData = {
+    title: "Help Save the Local Library",
+    description: "Our local library needs urgent renovation to continue serving our community. Your contribution will help maintain this vital educational resource for future generations.",
+    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQssRRU1sV63S1QIXZl1z38Xj2olXz5P_2Hwg&s",
+    amountCollected: 15000,
+    totalAmount: 25000,
+    daysLeft: 15
+  };
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  
+    const openModal = () => setIsModalOpen(true);
+    const closeModal = () => setIsModalOpen(false);
+
   const [activeTab, setActiveTab] = useState(0);
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -124,13 +140,19 @@ const SlidingTabsComponent = () => {
               <Share className="h-4 w-4 sm:h-5 sm:w-5" />
               Share
             </Button>
-            <Button className=" gap-2 justify-center px-24  bg-blue-800 hover:bg-blue-600">
+            <Button className=" gap-2 justify-center px-24  bg-blue-800 hover:bg-blue-600"
+              onClick={openModal}>
               <HeartHandshake className="h-4 w-4 sm:h-5 sm:w-5" />
               Contribute
             </Button>
           </div>
         </div>
       </div>
+      <ContributeModal 
+        isOpen={isModalOpen} 
+        onClose={closeModal} 
+        title={campaignData.title}
+      />
     </div>
   );
 };
