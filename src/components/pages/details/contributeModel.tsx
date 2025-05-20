@@ -25,7 +25,7 @@ import { ConnectButton, lightTheme, useActiveAccount } from "thirdweb/react";
 import { client } from "@/app/client";
 import { useToast } from "@/hooks/use-toast";
 import { prepareContractCall, sendTransaction } from "thirdweb";
-import { contract } from "@/util/helper";
+import { contract, updateCampaignFunding } from "@/util/helper";
 
 interface ContributeModalProps {
   isOpen: boolean;
@@ -99,6 +99,7 @@ const ContributeModal = ({
     }
 
   try{
+    
     const transaction = await prepareContractCall({
       contract:contract,
       method: "function donate(string _id) payable",
@@ -109,11 +110,16 @@ const ContributeModal = ({
       transaction,
       account,
     });
-
+    const response = await updateCampaignFunding(id, Number(amount))
     toast({
       title: 'Donation completed',
       description:'Thank you for your contribution' 
     })
+
+      setTimeout(() => {
+    window.location.reload();
+  }, 2000); // 2 second delay
+    
     }
     catch(error){
       toast({

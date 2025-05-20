@@ -199,3 +199,46 @@ export const contactForm = async (FormData: { name: string; phone: string; email
         return data? (data.filter(c => c.approval_status === 'pending').length) : 0;
     }
   };
+
+
+//   Increment the amount raise 
+export const updateCampaignFunding = async (campaign_id:string, amount:number) => {
+    try {
+    // First, get the current amount_raised value
+    const { data: campaign, error: fetchError } = await supabase
+      .from('approved_campaigns')
+      .select('amount_raised')
+      .eq('campaign_id', campaign_id)
+      .single();
+    
+    if (fetchError) {
+      throw new Error(`Error fetching campaign: ${fetchError.message}`);
+    }
+    
+    if (!campaign) {
+      throw new Error(`Campaign with ID ${campaign_id} not found`);
+    }
+    
+    // Calculate the new amount
+    const newAmount = (campaign.amount_raised || 0) + amount;
+    
+    // Update the campaign with the new amount
+    const { data: updatedCampaign, error: updateError } = await supabase
+      .from('approved_campaigns')
+      .update({ amount_raised: newAmount })
+      .eq('campaign_id', campaign_id)
+      .select()
+      .single();
+    
+    if (updateError) {
+      throw new Error(`Error updating campaign: ${updateError.message}`);
+    }
+    
+    console.log(`Successfully updated campaign ${campaign_id}. New amount_raised: ${newAmount}`);
+    return updatedCampaign;
+    
+  } catch (error) {
+    console.error('Error in updateCampaignAmount:', error instanceof Error ? error.message : String(error));
+    throw error;
+  }
+};
