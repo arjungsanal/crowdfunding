@@ -3,52 +3,51 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Share2 } from "lucide-react";
+import { Database } from '@/types/supabse';
+import { campaignStatus, getPublicUrl } from '@/util/helper';
+import Link from 'next/link'
 
-interface Campaign {
-  title: string;
-  image: string;
-  requiredAmount: number;
-  collectedAmount: number;
-  endDate: string;
-  progress: number;
-}
+type Campaign = Database["public"]["Tables"]["campaigns"]["Row"];
+
 
 interface CampaignCardProps {
   campaign: Campaign;
 }
 
-const CampaignCard: React.FC<CampaignCardProps> = ({ campaign }) => {
+const CampaignCard: React.FC<CampaignCardProps> = async ({ campaign }) => {
+  const campaignStatusDetails = await campaignStatus(campaign.id);
+  const progress = (campaignStatusDetails?.amount_raised / campaign.goal) * 100;
   return (
-    <Card className="w-72 max-w-sm flex flex-col h-full">
+    <Card className="w-full sm:w-[340px] md:w-[360px] lg:w-[380px] flex flex-col h-full">
       <div className="relative">
         <img
-          src={campaign.image}
+          src={getPublicUrl(campaign.cover_image_url ?? '')}
           alt={campaign.title}
-          className="w-full h-30 object-cover rounded-t-lg"
+          className="w-full h-[200px] sm:h-[220px] object-cover rounded-t-lg"
         />
       </div>
       
       <CardHeader className="pb-2 flex-none">
-        <h3 className="text-xl font-bold line-clamp-2 min-h-[3rem]">{campaign.title}</h3>
-        <div className="flex justify-between items-center text-sm text-gray-600">
-          <span>Goal: ${campaign.requiredAmount.toLocaleString()}</span>
-          <span>Ends: {new Date(campaign.endDate).toLocaleDateString()}</span>
+        <h3 className="text-lg sm:text-xl font-bold line-clamp-2 min-h-[3rem]">{campaign.title}</h3>
+        <div className="flex justify-between items-center text-xs sm:text-sm text-gray-600">
+          <span>Goal: ${campaign.goal}</span>
+          <span>Ends: ${campaign.deadline}</span>
         </div>
       </CardHeader>
 
       <CardContent className="pb-4 flex-1">
         <div className="space-y-2">
-          <Progress value={campaign.progress} className="h-2" />
-          <div className="flex justify-between text-sm">
+          <Progress value={progress} className="h-2" />
+          <div className="flex justify-between text-xs sm:text-sm">
             <span className="font-medium">
-              ${campaign.collectedAmount.toLocaleString()} raised
+              ${campaignStatusDetails.amount_raised} raised
             </span>
-            <span className="text-gray-600">{campaign.progress}%</span>
+            <span className="text-gray-600">{progress}%</span>
           </div>
         </div>
       </CardContent>
 
-      <CardFooter className="gap-4 flex-none">
+      <CardFooter className="gap-2 sm:gap-4 flex-none">
         <Button 
           variant="outline" 
           size="icon"
@@ -56,8 +55,8 @@ const CampaignCard: React.FC<CampaignCardProps> = ({ campaign }) => {
         >
           <Share2 className="h-4 w-4" />
         </Button>
-        <Button className="flex-1">
-          Contribute Now
+        <Button asChild  className="flex-1 text-sm sm:text-base">
+          <Link href={`/details/${campaign.id}`}>Contribute Now</Link>
         </Button>
       </CardFooter>
     </Card>

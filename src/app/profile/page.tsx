@@ -8,12 +8,12 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useToast } from "@/hooks/use-toast"
 import ProtectedRoute from "@/components/protectedRoute"
-import { Camera, LogOut, Trash2, User, Mail, Lock, Clock, DollarSign, ChevronRight, ArrowDownCircle } from "lucide-react"
+import { LogOut, User, Mail, Lock, Clock, DollarSign, ChevronRight, ArrowDownCircle } from "lucide-react"
 import type React from "react"
 import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
-import YourCampaign from "@/components/pages/profile/yourCampaign"
 import Link from "next/link"
+import { fetchMyCampaigns } from "@/util/helper"
 
 
 export default function ProfilePage() {
@@ -47,6 +47,9 @@ export default function ProfilePage() {
 
   const { user, signOut } = useAuth()
   const { toast } = useToast()
+  console.log(user)
+    //   const activeCampaigns =  fetchMyCampaigns(user?.id);
+    // console.log("Approved campaigns here: ", activeCampaigns);
 
   const handleUpdateProfile = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -131,7 +134,7 @@ export default function ProfilePage() {
                     disabled 
                   />
                 </div>
-                <div className="space-y-2">
+                {/* <div className="space-y-2">
                   <Label htmlFor="current-password" className="text-sm font-medium text-gray-700 flex items-center gap-2">
                     <Lock className="h-4 w-4 text-gray-400" />
                     Current Password
@@ -154,7 +157,7 @@ export default function ProfilePage() {
                     placeholder="••••••••" 
                     className="h-10"
                   />
-                </div>
+                </div> */}
               </div>
 
               <div className="pt-6 flex flex-col sm:flex-row justify-between gap-4">
@@ -178,9 +181,9 @@ export default function ProfilePage() {
                     Delete Account
                   </Button> */}
                 </div>
-                <Button type="submit" className="flex-1 sm:flex-none">
+                {/* <Button type="submit" className="flex-1 sm:flex-none">
                   Update Profile
-                </Button>
+                </Button> */}
               </div>
             </form>
           </div>

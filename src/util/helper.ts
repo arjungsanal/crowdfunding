@@ -242,3 +242,35 @@ export const updateCampaignFunding = async (campaign_id:string, amount:number) =
     throw error;
   }
 };
+
+
+
+//Fetch approved campaigns only
+export const fetchApprovedCampaign = async () => {
+  try {
+    const { data, error } = await supabase.from('campaigns').select('*').eq('approval_status', 'approved');
+    
+    if (error) {
+      console.error('Error fetching campaigns:', error);
+      return []; // Return empty array in case of error
+    }
+    
+    return data; // Return the data if no error
+  } catch (e) {
+    console.error('Exception fetching campaigns:', e);
+    return []; // Return empty array in case of exception
+  }
+};
+
+export const fetchMyCampaigns = async(userId :string | undefined)=>{
+    if(!userId){
+        return
+    }
+    try{
+        const {data,error} = await supabase.from('campaigns').select('*').eq('user_id',userId);
+        return data;
+    }
+    catch(error){
+        console.log(error);
+    }
+}

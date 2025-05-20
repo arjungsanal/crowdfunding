@@ -2,8 +2,9 @@ import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { MapPin, User } from "lucide-react";
+import { CheckCircle, Clock, MapPin, User } from "lucide-react";
 import { Database } from "@/types/supabse";
+import { Badge } from "@/components/ui/badge";
 
 type Campaign = Database["public"]["Tables"]["campaigns"]["Row"];
 
@@ -22,6 +23,7 @@ type CampaignDetailsProps = {
 
 const CampaignDetails = ({ campaignerDetails, recentDonations }: CampaignDetailsProps) => {
   return (
+    
     <div className="grid grid-cols-1 bg-slate-100 md:grid-cols-2 gap-6 w-full max-w-5xl mx-auto p-4">
       {/* Campaigner Details Card */}
       <Card className="w-full">
@@ -53,8 +55,29 @@ const CampaignDetails = ({ campaignerDetails, recentDonations }: CampaignDetails
         </CardContent>
       </Card>
 
-      {/* Recent Donations Card */}
       <Card className="w-full">
+  <CardHeader>
+    <CardTitle className="text-xl font-semibold">Campaign Verification Status</CardTitle>
+    <p className="text-sm text-gray-600">All campaigns are verified by our admin team</p>
+  </CardHeader>
+  <CardContent>
+    <div className="mb-6 p-4 bg-blue-50 rounded-lg">
+      <h3 className="font-medium text-blue-800 mb-2">Our Promise of Authenticity</h3>
+      <p className="text-sm text-blue-700">
+        We verify every campaign thoroughly to ensure:
+      </p>
+      <ul className="list-disc list-inside text-sm text-blue-700 mt-2">
+        <li>Legitimate campaign creators</li>
+        <li>Authentic campaign purposes</li>
+        <li>Transparent fund usage</li>
+        <li>Regular progress updates</li>
+      </ul>
+    </div>
+  </CardContent>
+</Card>
+
+      {/* Recent Donations Card */}
+      {/* <Card className="w-full">
         <CardHeader>
           <CardTitle className="text-xl font-semibold">Recent Donations</CardTitle>
         </CardHeader>
@@ -94,7 +117,7 @@ const CampaignDetails = ({ campaignerDetails, recentDonations }: CampaignDetails
             </div>
           </ScrollArea>
         </CardContent>
-      </Card>
+      </Card> */}
     </div>
   );
 };
