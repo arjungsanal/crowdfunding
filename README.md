@@ -1,36 +1,133 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<div align="center">
 
-## Getting Started
+# 🌟 CrestFunding - Decentralized Crowdfunding Platform
 
-First, run the development server:
+[![License](https://img.shields.io/badge/license-AGPL--3.0-blue.svg)](LICENSE)
+[![Next.js](https://img.shields.io/badge/Next.js-14-black)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)](https://www.typescriptlang.org/)
+[![Solidity](https://img.shields.io/badge/Solidity-0.8.x-363636)](https://soliditylang.org/)
+
+A blockchain-based crowdfunding platform enabling transparent and decentralized fundraising campaigns.
+
+[Features](#features) • [Prerequisites](#prerequisites) • [Setup](#local-development-setup) • [Contributing](#contributing)
+
+</div>
+
+---
+
+## 🚀 Features
+
+- ✨ Create and manage fundraising campaigns
+- 🔐 Secure authentication system
+- 👑 Admin dashboard for campaign approval
+- 📊 Real-time campaign tracking
+- ⛓️ Blockchain-based transparent transactions
+- 📱 Responsive design for all devices
+
+## 🛠️ Technologies Used
+
+<details>
+<summary>Frontend Stack</summary>
+
+- **Next.js 14** - React framework for production
+- **TypeScript** - For type-safe code
+- **Tailwind CSS** - For styling
+- **Shadcn UI** - For UI components
+- **Context API** - For state management
+</details>
+
+<details>
+<summary>Backend & Blockchain Stack</summary>
+
+- **Thirdweb** - For smart contract deployment and management
+- **Solidity** - For smart contract development
+- **Supabase** - For database and authentication
+- **Ethers.js** - For blockchain interactions
+- **Sepolia Testnet** - Ethereum test network
+</details>
+
+## 📋 Prerequisites
+
+- Node.js (v18 or later)
+- npm or yarn
+- MetaMask wallet extension
+- Git
+
+## 🚀 Local Development Setup
+
+### 1. Clone and Install
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <repository-url>
+cd crowdfunding
+npm install
+
+# Install blockchain dependencies
+cd blockchain
+npm install
+cd ..
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Environment Configuration
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Create a `.env` file in the root directory:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```env
+# Supabase Configuration
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 
-## Learn More
+# Blockchain Configuration (Sepolia Testnet)
+NEXT_PUBLIC_CONTRACT_ADDRESS=your_deployed_contract_address
+NEXT_PUBLIC_RPC_URL=https://sepolia.infura.io/v3/your_infura_project_id
 
-To learn more about Next.js, take a look at the following resources:
+# Thirdweb Configuration
+NEXT_PUBLIC_THIRDWEB_CLIENT_ID=your_thirdweb_client_id
+NEXT_PUBLIC_THIRDWEB_SECRET_KEY=your_thirdweb_secret_key
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 3. Launch Application
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Connect MetaMask to Sepolia testnet
+2. Get test ETH from:
+   - [Sepolia Faucet](https://sepoliafaucet.com/)
+   - [Infura Sepolia Faucet](https://www.infura.io/faucet/sepolia)
+3. Start development server:
+   ```bash
+   npm run dev
+   ```
+   Visit `http://localhost:3000` 🎉
 
-## Deploy on Vercel
+## 📜 Smart Contract
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Our `CrestFunding.sol` contract is deployed on Ethereum Sepolia testnet via Thirdweb, featuring:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- 📝 Campaign creation
+- 💰 Contribution management
+- 🏦 Withdrawal mechanisms
+- 📊 Campaign status tracking
+
+### Contract Interaction
+
+View the contract on:
+- [Sepolia Etherscan](https://sepolia.etherscan.io/)
+- Thirdweb dashboard
+
+Requirements:
+1. MetaMask connected to Sepolia
+2. Sepolia ETH in wallet
+3. Use dApp interface for interactions
+
+## 🤝 Contributing
+
+Contributions welcome! See our [Contributing Guidelines](CONTRIBUTING.md).
+
+## 📄 License
+
+[GNU Affero General Public License v3.0](LICENSE) - Making the world more open, one contribution at a time.
+
+---
+
+<div align="center">
+Made with ❤️ by the CrestFunding Team
+</div>
