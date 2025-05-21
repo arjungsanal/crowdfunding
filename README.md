@@ -9,7 +9,7 @@
 
 A blockchain-based crowdfunding platform enabling transparent and decentralized fundraising campaigns.
 
-[Features](#features) • [Prerequisites](#prerequisites) • [Setup](#local-development-setup) • [Contributing](#contributing)
+🔗 [Live Demo](https://crestfunding.vercel.app) • [Features](#features) • [Prerequisites](#prerequisites) • [Setup](#local-development-setup) • [Contributing](#contributing)
 
 </div>
 
