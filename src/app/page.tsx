@@ -22,6 +22,7 @@ import { ThirdwebProvider } from "thirdweb/react";
 //   address: "0x1609112877e1B6675a74f56e1c5d474a59EC184d",
 // });
 
+
 export default function Home() {
   return (
     <LoadingProvider>

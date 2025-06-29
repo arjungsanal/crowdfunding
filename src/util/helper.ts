@@ -274,3 +274,20 @@ export const fetchMyCampaigns = async(userId :string | undefined)=>{
         console.log(error);
     }
 }
+
+// Fetch amount_raised for a campaign from approved_campaigns table
+export const fetchAmountRaisedForCampaign = async (campaignId: string): Promise<number> => {
+  try {
+    const { data, error } = await supabase
+      .from("approved_campaigns")
+      .select("amount_raised")
+      .eq("campaign_id", campaignId)
+      .single();
+    if (error || !data) {
+      return 0;
+    }
+    return data.amount_raised || 0;
+  } catch {
+    return 0;
+  }
+};
